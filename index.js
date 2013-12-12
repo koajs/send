@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 
-debug = require('debug')('koa-send');
+var debug = require('debug')('koa-send');
 var assert = require('assert');
 var path = require('path');
 var normalize = path.normalize;
