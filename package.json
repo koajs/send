@@ -1,0 +1,25 @@
+{
+  "name": "koa-send",
+  "description": "Transfer static files",
+  "repository": "koajs/send",
+  "version": "1.0.0",
+  "keywords": [
+    "koa",
+    "file",
+    "static",
+    "sendfile"
+  ],
+  "files": [
+    "index.js"
+  ],
+  "devDependencies": {
+    "koa": "koajs/koa",
+    "should": "~1.2.2",
+    "mocha": "~1.12.0",
+    "supertest": "~0.7.1"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "debug": "*"
+  }
+}
