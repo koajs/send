@@ -2,6 +2,7 @@
 var request = require('supertest');
 var send = require('..');
 var koa = require('koa');
+var assert = require('assert');
 
 describe('send(ctx, file)', function(){
   describe('with no .root', function(){
@@ -157,6 +158,35 @@ describe('send(ctx, file)', function(){
       request(app.listen())
       .get('/')
       .expect(404, done);
+    })
+
+    it('should return undefined', function(done){
+      var app = koa();
+
+      app.use(function *(){
+        var sent = yield send(this, __dirname + '/test');
+        assert.equal(sent, undefined);
+      });
+
+      request(app.listen())
+      .get('/')
+      .expect(404, done);
+    })
+  })
+
+  describe('when path is a file', function(){
+    it('should return the path', function(done){
+      var app = koa();
+
+      app.use(function *(){
+        var p = __dirname + '/fixtures/user.json';
+        var sent = yield send(this, p);
+        assert.equal(sent, p);
+      });
+
+      request(app.listen())
+      .get('/')
+      .expect(200, done);
     })
   })
 

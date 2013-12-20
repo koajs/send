@@ -89,6 +89,8 @@ function send(ctx, path, opts) {
     res.on('finish', cleanup);
     socket.on('error', destroy);
 
+    return path;
+
     function destroy(){
       stream.destroy();
       cleanup();
