@@ -172,4 +172,23 @@ describe('send(ctx, file)', function(){
     .expect('Content-Type', 'application/json')
     .end(done);
   })
+
+  it('should cleanup on socket error', function(done){
+    var app = koa();
+    var stream
+
+    app.use(function *(){
+      yield send(this, __dirname + '/fixtures/user.json');
+      stream = this.body;
+      this.socket.emit('error', new Error('boom'));
+    })
+
+    request(app.listen())
+    .get('/')
+    .expect(500, function(err){
+      err.should.be.ok;
+      stream.destroyed.should.be.ok;
+      done();
+    })
+  })
 })

@@ -1,5 +1,5 @@
 
-# koa-send
+# koa-send [![Build Status](https://travis-ci.org/koajs/send.png)](https://travis-ci.org/koajs/send)
 
  Static file serving middleware.
 

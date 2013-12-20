@@ -82,7 +82,22 @@ function send(ctx, path, opts) {
     // stream
     this.set('Last-Modified', stats.mtime.toUTCString());
     this.type = extname(path);
-    this.body = fs.createReadStream(path);
+    var stream = this.body = fs.createReadStream(path);
+
+    var res = this.res;
+    var socket = this.socket;
+    res.on('finish', cleanup);
+    socket.on('error', destroy);
+
+    function destroy(){
+      stream.destroy();
+      cleanup();
+    }
+
+    function cleanup(){
+      res.removeListener('finish', cleanup);
+      socket.removeListener('error', destroy);
+    }
   }
 }
 
