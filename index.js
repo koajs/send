@@ -3,6 +3,7 @@
  * Module dependencies.
  */
 
+var onSocketError = require('on-socket-error');
 var debug = require('debug')('koa-send');
 var assert = require('assert');
 var path = require('path');
@@ -83,23 +84,11 @@ function send(ctx, path, opts) {
     this.set('Last-Modified', stats.mtime.toUTCString());
     this.type = extname(path);
     var stream = this.body = fs.createReadStream(path);
-
-    var res = this.res;
-    var socket = this.socket;
-    res.on('finish', cleanup);
-    socket.on('error', destroy);
+    onSocketError(this, function(){
+      stream.destroy();
+    });
 
     return path;
-
-    function destroy(){
-      stream.destroy();
-      cleanup();
-    }
-
-    function cleanup(){
-      res.removeListener('finish', cleanup);
-      socket.removeListener('error', destroy);
-    }
   }
 }
 
