@@ -49,23 +49,23 @@ function send(ctx, path, opts) {
     // normalize path
     path = decode(path);
 
-    if (-1 == path) return ctx.error('failed to decode', 400);
+    if (-1 == path) return ctx.throw('failed to decode', 400);
 
     // null byte(s)
-    if (~path.indexOf('\0')) return ctx.error('null bytes', 400);
+    if (~path.indexOf('\0')) return ctx.throw('null bytes', 400);
 
     // index file support
     if (index && trailingSlash) path += index;
 
     // malicious path
-    if (!root && !isAbsolute(path)) return ctx.error('relative paths require the .root option', 500);
-    if (!root && ~path.indexOf('..')) return ctx.error('malicious path', 400);
+    if (!root && !isAbsolute(path)) return ctx.throw('relative paths require the .root option', 500);
+    if (!root && ~path.indexOf('..')) return ctx.throw('malicious path', 400);
 
     // relative to root
     path = normalize(join(root, path));
 
     // out of bounds
-    if (root && 0 != path.indexOf(root)) return ctx.error('malicious path', 400);
+    if (root && 0 != path.indexOf(root)) return ctx.throw('malicious path', 400);
 
     // hidden file support, ignore
     if (!hidden && leadingDot(path)) return;
