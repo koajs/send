@@ -82,7 +82,7 @@ function send(ctx, path, opts) {
 
     // stream
     this.set('Last-Modified', stats.mtime.toUTCString());
-    this.set('Cache-Control', 'max-age=' + ~~(maxage/1000));
+    this.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
     this.type = extname(path);
     var stream = this.body = fs.createReadStream(path);
     onSocketError(this, function(){
