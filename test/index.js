@@ -190,14 +190,13 @@ describe('send(ctx, file)', function(){
       .expect(200, done);
     })
 
-    describe('and max age is specified', function () {
-
-      it('should set max-age in seconds', function(done) {
+    describe('and max age is specified', function(){
+      it('should set max-age in seconds', function(done){
         var app = koa();
 
         app.use(function *(){
           var p = __dirname + '/fixtures/user.json';
-          var sent = yield send(this, p, {maxage: 5000});
+          var sent = yield send(this, p, { maxage: 5000 });
           assert.equal(sent, p);
         });
 
@@ -207,12 +206,12 @@ describe('send(ctx, file)', function(){
         .expect(200, done);
       })
 
-      it('should truncate fractional values for max-age', function (done) {
+      it('should truncate fractional values for max-age', function(done){
         var app = koa();
 
         app.use(function *(){
           var p = __dirname + '/fixtures/user.json';
-          var sent = yield send(this, p, {maxage: 1234});
+          var sent = yield send(this, p, { maxage: 1234 });
           assert.equal(sent, p);
         });
 
@@ -221,9 +220,7 @@ describe('send(ctx, file)', function(){
         .expect('Cache-Control','max-age=1')
         .expect(200, done);
       })
-
     })
-
   })
 
   it('should set the Content-Type', function(done){
