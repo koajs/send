@@ -175,6 +175,7 @@ describe('send(ctx, file)', function(){
   })
 
   describe('when path is a file', function(){
+
     it('should return the path', function(done){
       var app = koa();
 
@@ -188,6 +189,41 @@ describe('send(ctx, file)', function(){
       .get('/')
       .expect(200, done);
     })
+
+    describe('and max age is specified', function () {
+
+      it('should set max-age in seconds', function(done) {
+        var app = koa();
+
+        app.use(function *(){
+          var p = __dirname + '/fixtures/user.json';
+          var sent = yield send(this, p, {maxage: 5000});
+          assert.equal(sent, p);
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect('Cache-Control','max-age=5')
+        .expect(200, done);
+      })
+
+      it('should truncate fractional values for max-age', function (done) {
+        var app = koa();
+
+        app.use(function *(){
+          var p = __dirname + '/fixtures/user.json';
+          var sent = yield send(this, p, {maxage: 1234});
+          assert.equal(sent, p);
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect('Cache-Control','max-age=1')
+        .expect(200, done);
+      })
+
+    })
+
   })
 
   it('should set the Content-Type', function(done){
