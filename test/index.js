@@ -236,6 +236,19 @@ describe('send(ctx, file)', function(){
     .end(done);
   })
 
+  it('should set the Content-Length', function(done){
+    var app = koa();
+
+    app.use(function *(){
+      yield send(this, __dirname + '/fixtures/user.json');
+    });
+
+    request(app.listen())
+    .get('/')
+    .expect('Content-Length', '18')
+    .end(done);
+  })
+
   it('should cleanup on socket error', function(done){
     var app = koa();
     var stream
