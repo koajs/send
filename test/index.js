@@ -174,6 +174,20 @@ describe('send(ctx, file)', function(){
     })
   })
 
+  describe('when path is a directory', function(){
+    it('should 404', function(done){
+      var app = koa();
+
+      app.use(function *(){
+        yield send(this, __dirname + '/fixtures');
+      });
+
+      request(app.listen())
+      .get('/')
+      .expect(404, done);
+    })
+  })
+
   describe('when path is a file', function(){
 
     it('should return the path', function(done){
