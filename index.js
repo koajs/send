@@ -73,8 +73,6 @@ function send(ctx, path, opts) {
     // stat
     try {
       var stats = yield stat(path);
-
-      // directory, ignore
       if (stats.isDirectory()) return;
     } catch (err) {
       var notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR'];
