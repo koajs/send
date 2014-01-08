@@ -1,4 +1,9 @@
 
+1.2.2 / 2014-01-07
+==================
+
+ * fix: ignore directories instead of crashing koa
+
 1.2.1 / 2014-01-02
 ==================
 
