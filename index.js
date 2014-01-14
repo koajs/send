@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -33,7 +32,7 @@ module.exports = send;
 
 function send(ctx, path, opts) {
   assert(ctx, 'koa context required');
-  assert(path, 'path path required');
+  assert(path, 'koa path required');
   opts = opts || {};
 
   // options
