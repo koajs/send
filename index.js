@@ -32,7 +32,7 @@ module.exports = send;
 
 function send(ctx, path, opts) {
   assert(ctx, 'koa context required');
-  assert(path, 'koa path required');
+  assert(path, 'pathname required');
   opts = opts || {};
 
   // options
