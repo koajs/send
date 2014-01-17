@@ -1,7 +1,7 @@
 HEAD
 ==================
 
- * update: on-socket-error
+ * update: finished
 
 1.2.2 / 2014-01-07
 ==================

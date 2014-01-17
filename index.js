@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-var onSocketError = require('on-socket-error');
+var onFinished = require('finished');
 var debug = require('debug')('koa-send');
 var assert = require('assert');
 var path = require('path');
@@ -86,9 +86,7 @@ function send(ctx, path, opts) {
     this.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
     this.type = extname(path);
     var stream = this.body = fs.createReadStream(path);
-    onSocketError(this, function(){
-      stream.destroy();
-    });
+    onFinished(this, stream.destroy.bind(stream));
 
     return path;
   }
