@@ -1,7 +1,9 @@
-HEAD
+
+1.2.3 / 2014-02-11
 ==================
 
- * update: finished
+ * update finished
+ * make assert message better
 
 1.2.2 / 2014-01-07
 ==================
