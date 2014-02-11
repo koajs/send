@@ -1,7 +1,7 @@
-
 1.2.3 / 2014-02-11
 ==================
 
+ * fix malicious path in windows
  * update finished
  * make assert message better
 
