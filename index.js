@@ -81,12 +81,12 @@ function send(ctx, path, opts) {
     }
 
     // stream
-    this.set('Last-Modified', stats.mtime.toUTCString());
-    this.set('Content-Length', stats.size);
-    this.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
-    this.type = extname(path);
-    var stream = this.body = fs.createReadStream(path);
-    onFinished(this, stream.destroy.bind(stream));
+    ctx.set('Last-Modified', stats.mtime.toUTCString());
+    ctx.set('Content-Length', stats.size);
+    ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
+    ctx.type = extname(path);
+    var stream = ctx.body = fs.createReadStream(path);
+    onFinished(ctx, stream.destroy.bind(stream));
 
     return path;
   }
