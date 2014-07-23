@@ -246,7 +246,7 @@ describe('send(ctx, file)', function(){
 
     request(app.listen())
     .get('/')
-    .expect('Content-Type', 'application/json')
+    .expect('Content-Type', /application\/json/)
     .end(done);
   })
 
