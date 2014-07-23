@@ -13,14 +13,14 @@
     "index.js"
   ],
   "devDependencies": {
-    "koa": "koajs/koa",
-    "should": "~1.2.2",
-    "mocha": "~1.12.0",
-    "supertest": "~0.7.1"
+    "koa": "*",
+    "should": "3",
+    "mocha": "1",
+    "supertest": "0"
   },
   "license": "MIT",
   "dependencies": {
-    "finished": "~1.1.1",
+    "finished": "~1.2.2",
     "debug": "*"
   },
   "scripts": {
