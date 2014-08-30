@@ -41,9 +41,11 @@ function send(ctx, path, opts) {
   var index = opts.index;
   var maxage = opts.maxage || 0;
   var hidden = opts.hidden || false;
+  var autogz = opts.autogz || false;
 
   return function *(){
     var trailingSlash = '/' == path[path.length - 1];
+    var encoding = this.acceptsEncodings('gzip', 'deflate', 'identity');
 
     // normalize path
     path = decode(path);
@@ -69,6 +71,13 @@ function send(ctx, path, opts) {
     // hidden file support, ignore
     if (!hidden && leadingDot(path)) return;
 
+    // serve gzipped file when possible
+    if (encoding === 'gzip' && (yield exists(path + '.gz'))) {
+      path = path + '.gz';
+      ctx.set('Content-Encoding', 'gzip');
+      ctx.res.removeHeader('Content-Length');
+    }
+
     // stat
     try {
       var stats = yield stat(path);
@@ -84,7 +93,7 @@ function send(ctx, path, opts) {
     ctx.set('Last-Modified', stats.mtime.toUTCString());
     ctx.set('Content-Length', stats.size);
     ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
-    ctx.type = extname(path);
+    ctx.type = type(path);
     var stream = ctx.body = fs.createReadStream(path);
     onFinished(ctx, stream.destroy.bind(stream));
 
@@ -98,6 +107,26 @@ function send(ctx, path, opts) {
 
 function leadingDot(path) {
   return '.' == basename(path)[0];
+}
+
+/**
+ * File type.
+ */
+
+function type(file) {
+  return extname(basename(file, '.gz'));
+}
+
+/**
+ * Exists thunk.
+ */
+
+function exists(file) {
+  return function(done){
+    fs.exists(file, function(exists) {
+      done(null, exists||false);
+    });
+  }
 }
 
 /**
