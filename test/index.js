@@ -204,6 +204,35 @@ describe('send(ctx, file)', function(){
       .expect(200, done);
     })
 
+    describe('or .gz version when requested and if possible', function(){
+      it('should return path', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, __dirname + '/fixtures/gzip.json');
+        });
+
+        request(app.listen())
+        .get('/')
+        .set('Accept-Encoding', 'deflate, identity')
+        .expect('Content-Length', 18)
+        .expect(200, done);
+      })
+      it('should return .gz path', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, __dirname + '/fixtures/gzip.json');
+        });
+
+        request(app.listen())
+        .get('/')
+        .set('Accept-Encoding', 'gzip, deflate, identity')
+        .expect('Content-Length', 153)
+        .expect(200, done);
+      })
+    })
+
     describe('and max age is specified', function(){
       it('should set max-age in seconds', function(done){
         var app = koa();

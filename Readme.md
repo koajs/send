@@ -15,6 +15,8 @@ $ npm install koa-send
  - `hidden` Allow transfer of hidden files. defaults to false
  - `root` Root directory to restrict file access
 
+Note that the module will try to serve the gzipped version of a file automatically when `gzip` is supported by a client and if the requested file with `.gz` extension exists.
+
 ## Root path
 
   Note that when `root` is _not_ used you __MUST__ provide an _absolute_
