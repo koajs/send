@@ -2,7 +2,6 @@
  * Module dependencies.
  */
 
-var onFinished = require('finished');
 var debug = require('debug')('koa-send');
 var assert = require('assert');
 var path = require('path');
@@ -95,7 +94,6 @@ function send(ctx, path, opts) {
     ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
     ctx.type = type(path);
     var stream = ctx.body = fs.createReadStream(path);
-    onFinished(ctx, stream.destroy.bind(stream));
 
     return path;
   }
