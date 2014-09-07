@@ -14,7 +14,8 @@ $ npm install koa-send
  - `maxage` Browser cache max-age in milliseconds. defaults to 0
  - `hidden` Allow transfer of hidden files. defaults to false
  - `root` Root directory to restrict file access
- - `autogz` Serve gzipped file version when possible if the requested file with .gz extension exists
+
+Note that the module will try to serve the gzipped version of a file automatically when `gzip` is supported by a client and if the requested file with `.gz` extension exists.
 
 ## Root path
 

@@ -209,7 +209,7 @@ describe('send(ctx, file)', function(){
         var app = koa();
 
         app.use(function *(){
-          yield send(this, __dirname + '/fixtures/user.json', { autogz: true });
+          yield send(this, __dirname + '/fixtures/gzip.json');
         });
 
         request(app.listen())
@@ -222,7 +222,7 @@ describe('send(ctx, file)', function(){
         var app = koa();
 
         app.use(function *(){
-          yield send(this, __dirname + '/fixtures/user.json', { autogz: true });
+          yield send(this, __dirname + '/fixtures/gzip.json');
         });
 
         request(app.listen())
