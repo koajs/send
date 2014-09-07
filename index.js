@@ -72,8 +72,8 @@ function send(ctx, path, opts) {
     if (!hidden && leadingDot(path)) return;
 
     // serve gzipped file when possible
-    if (encoding === 'gzip' && (yield exists(path+'.gz'))) {
-      path = path+'.gz';
+    if (encoding === 'gzip' && (yield exists(path + '.gz'))) {
+      path = path + '.gz';
       ctx.set('Content-Encoding', 'gzip');
       ctx.res.removeHeader('Content-Length');
     }

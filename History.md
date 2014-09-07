@@ -1,14 +1,3 @@
-1.2.5 / 2014-09-07
-==================
-
- * add: automatically serve `.gz` version when possible
-
-1.2.4 / 2014-06-23
-==================
-
- * dependencies bump
- * fix: should set the Content-Type test
-
 1.2.3 / 2014-02-11
 ==================
 
