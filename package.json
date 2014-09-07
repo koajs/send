@@ -20,8 +20,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "debug": "*",
-    "finished": "^1.2.2"
+    "finished": "~1.2.2",
+    "debug": "*"
   },
   "scripts": {
     "test": "make test"
