@@ -2,7 +2,7 @@
   "name": "koa-send",
   "description": "Transfer static files",
   "repository": "koajs/send",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "keywords": [
     "koa",
     "file",
@@ -20,8 +20,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "finished": "~1.2.2",
-    "debug": "*"
+    "debug": "*",
+    "finished": "^1.2.2"
   },
   "scripts": {
     "test": "make test"
