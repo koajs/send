@@ -9,7 +9,7 @@ var normalize = path.normalize;
 var basename = path.basename;
 var extname = path.extname;
 var resolve = path.resolve;
-var fs = require('fs');
+var fs = require('mz/fs');
 var join = path.join;
 
 /**
@@ -70,7 +70,7 @@ function send(ctx, path, opts) {
     if (!hidden && leadingDot(path)) return;
 
     // serve gzipped file when possible
-    if (encoding === 'gzip' && (yield exists(path + '.gz'))) {
+    if (encoding === 'gzip' && (yield fs.exists(path + '.gz'))) {
       path = path + '.gz';
       ctx.set('Content-Encoding', 'gzip');
       ctx.res.removeHeader('Content-Length');
@@ -78,7 +78,7 @@ function send(ctx, path, opts) {
 
     // stat
     try {
-      var stats = yield stat(path);
+      var stats = yield fs.stat(path);
       if (stats.isDirectory()) return;
     } catch (err) {
       var notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR'];
@@ -112,28 +112,6 @@ function leadingDot(path) {
 
 function type(file) {
   return extname(basename(file, '.gz'));
-}
-
-/**
- * Exists thunk.
- */
-
-function exists(file) {
-  return function(done){
-    fs.exists(file, function(exists) {
-      done(null, exists||false);
-    });
-  }
-}
-
-/**
- * Stat thunk.
- */
-
-function stat(file) {
-  return function(done){
-    fs.stat(file, done);
-  }
 }
 
 /**
