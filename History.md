@@ -1,3 +1,11 @@
+
+1.3.0 / 2014-09-07
+==================
+
+ * add automatically check and serve `.gz` files
+ * remove `finished` dependency
+ * refactor with `mz`
+ 
 1.2.3 / 2014-02-11
 ==================
 
