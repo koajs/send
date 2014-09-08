@@ -1,5 +1,12 @@
 
-# koa-send [![Build Status](https://travis-ci.org/koajs/send.png)](https://travis-ci.org/koajs/send)
+# koa-send
+
+[![NPM version][npm-image]][npm-url]
+[![Build status][travis-image]][travis-url]
+[![Test coverage][coveralls-image]][coveralls-url]
+[![Dependency Status][david-image]][david-url]
+[![License][license-image]][license-url]
+[![Downloads][downloads-image]][downloads-url]
 
  Static file serving middleware.
 
@@ -62,3 +69,20 @@ console.log('listening on port 3000');
 ## License
 
   MIT
+
+[npm-image]: https://img.shields.io/npm/v/koa-send.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/koa-send
+[github-tag]: http://img.shields.io/github/tag/koajs/send.svg?style=flat-square
+[github-url]: https://github.com/koajs/send/tags
+[travis-image]: https://img.shields.io/travis/koajs/send.svg?style=flat-square
+[travis-url]: https://travis-ci.org/koajs/send
+[coveralls-image]: https://img.shields.io/coveralls/koajs/send.svg?style=flat-square
+[coveralls-url]: https://coveralls.io/r/koajs/send?branch=master
+[david-image]: http://img.shields.io/david/koajs/send.svg?style=flat-square
+[david-url]: https://david-dm.org/koajs/send
+[license-image]: http://img.shields.io/npm/l/koa-send.svg?style=flat-square
+[license-url]: LICENSE
+[downloads-image]: http://img.shields.io/npm/dm/koa-send.svg?style=flat-square
+[downloads-url]: https://npmjs.org/package/koa-send
+[gittip-image]: https://img.shields.io/gittip/jonathanong.svg?style=flat-square
+[gittip-url]: https://www.gittip.com/jonathanong/
