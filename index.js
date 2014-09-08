@@ -38,7 +38,7 @@ function send(ctx, path, opts) {
   debug('send "%s" %j', path, opts);
   var root = opts.root ? normalize(resolve(opts.root)) : '';
   var index = opts.index;
-  var maxage = opts.maxage || 0;
+  var maxage = opts.maxage || opts.maxAge || 0;
   var hidden = opts.hidden || false;
 
   return function *(){
