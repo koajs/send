@@ -40,7 +40,6 @@ function send(ctx, path, opts) {
   var index = opts.index;
   var maxage = opts.maxage || 0;
   var hidden = opts.hidden || false;
-  var autogz = opts.autogz || false;
 
   return function *(){
     var trailingSlash = '/' == path[path.length - 1];
@@ -65,7 +64,7 @@ function send(ctx, path, opts) {
     path = normalize(join(root, path));
 
     // out of bounds
-    if (root && 0 != path.indexOf(root)) return ctx.throw('malicious path', 400);
+    if (root && 0 !== path.indexOf(root)) return ctx.throw('malicious path', 400);
 
     // hidden file support, ignore
     if (!hidden && leadingDot(path)) return;
@@ -93,7 +92,7 @@ function send(ctx, path, opts) {
     ctx.set('Content-Length', stats.size);
     ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
     ctx.type = type(path);
-    var stream = ctx.body = fs.createReadStream(path);
+    ctx.body = fs.createReadStream(path);
 
     return path;
   }
