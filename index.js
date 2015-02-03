@@ -40,6 +40,7 @@ function send(ctx, path, opts) {
   var index = opts.index;
   var maxage = opts.maxage || opts.maxAge || 0;
   var hidden = opts.hidden || false;
+  var gzip = opts.gzip || opts.gzip === undefined ? true : false;
 
   return function *(){
     var trailingSlash = '/' == path[path.length - 1];
@@ -70,7 +71,7 @@ function send(ctx, path, opts) {
     if (!hidden && leadingDot(path)) return;
 
     // serve gzipped file when possible
-    if (encoding === 'gzip' && (yield fs.exists(path + '.gz'))) {
+    if (encoding === 'gzip' && gzip && (yield fs.exists(path + '.gz'))) {
       path = path + '.gz';
       ctx.set('Content-Encoding', 'gzip');
       ctx.res.removeHeader('Content-Length');

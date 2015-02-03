@@ -216,9 +216,10 @@ describe('send(ctx, file)', function(){
         .get('/')
         .set('Accept-Encoding', 'deflate, identity')
         .expect('Content-Length', 18)
+        .expect('{ "name": "tobi" }')
         .expect(200, done);
       })
-      it('should return .gz path', function(done){
+      it('should return .gz path (gzip option defaults to true)', function(done){
         var app = koa();
 
         app.use(function *(){
@@ -229,6 +230,35 @@ describe('send(ctx, file)', function(){
         .get('/')
         .set('Accept-Encoding', 'gzip, deflate, identity')
         .expect('Content-Length', 48)
+        .expect('{ "name": "tobi" }')
+        .expect(200, done);
+      })
+      it('should return .gz path when gzip option is turned on', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, __dirname + '/fixtures/gzip.json', {gzip: true});
+        });
+
+        request(app.listen())
+        .get('/')
+        .set('Accept-Encoding', 'gzip, deflate, identity')
+        .expect('Content-Length', 48)
+        .expect('{ "name": "tobi" }')
+        .expect(200, done);
+      })
+      it('should not return .gz path when gzip option is false', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, __dirname + '/fixtures/gzip.json', {gzip: false});
+        });
+
+        request(app.listen())
+        .get('/')
+        .set('Accept-Encoding', 'gzip, deflate, identity')
+        .expect('Content-Length', 18)
+        .expect('{ "name": "tobi" }')
         .expect(200, done);
       })
     })
