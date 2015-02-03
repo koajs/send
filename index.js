@@ -40,7 +40,7 @@ function send(ctx, path, opts) {
   var index = opts.index;
   var maxage = opts.maxage || opts.maxAge || 0;
   var hidden = opts.hidden || false;
-  var gzip = !opts.gzip ? false : true;
+  var gzip = opts.gzip || opts.gzip === undefined ? true : false;
 
   return function *(){
     var trailingSlash = '/' == path[path.length - 1];
