@@ -22,7 +22,8 @@
   "license": "MIT",
   "dependencies": {
     "debug": "*",
-    "mz": "^1.0.1"
+    "mz": "^1.0.1",
+    "resolve-path": "^1.2.1"
   },
   "scripts": {
     "test": "mocha --harmony-generators --require should --reporter spec",

@@ -3,6 +3,7 @@
  */
 
 var debug = require('debug')('koa-send');
+var resolvePath = require('resolve-path');
 var assert = require('assert');
 var path = require('path');
 var normalize = path.normalize;
@@ -10,7 +11,6 @@ var basename = path.basename;
 var extname = path.extname;
 var resolve = path.resolve;
 var fs = require('mz/fs');
-var join = path.join;
 
 /**
  * Expose `send()`.
@@ -37,6 +37,7 @@ function send(ctx, path, opts) {
   // options
   debug('send "%s" %j', path, opts);
   var root = opts.root ? normalize(resolve(opts.root)) : '';
+  path = path[0] == '/' ? path.slice(1) : path;
   var index = opts.index;
   var maxage = opts.maxage || opts.maxAge || 0;
   var hidden = opts.hidden || false;
@@ -51,21 +52,10 @@ function send(ctx, path, opts) {
 
     if (-1 == path) return ctx.throw('failed to decode', 400);
 
-    // null byte(s)
-    if (~path.indexOf('\0')) return ctx.throw('null bytes', 400);
-
     // index file support
     if (index && trailingSlash) path += index;
 
-    // malicious path
-    if (!root && !isAbsolute(path)) return ctx.throw('relative paths require the .root option', 500);
-    if (!root && ~path.indexOf('..')) return ctx.throw('malicious path', 400);
-
-    // relative to root
-    path = normalize(join(root, path));
-
-    // out of bounds
-    if (root && 0 !== path.indexOf(root)) return ctx.throw('malicious path', 400);
+    path = resolvePath(root, path);
 
     // hidden file support, ignore
     if (!hidden && leadingDot(path)) return;
@@ -125,18 +115,4 @@ function decode(path) {
   } catch (err) {
     return -1;
   }
-}
-
-/**
- * Check if `path` looks absolute.
- *
- * @param {String} path
- * @return {Boolean}
- * @api private
- */
-
-function isAbsolute(path){
-  if ('/' == path[0]) return true;
-  if (':' == path[1] && '\\' == path[2]) return true;
-  if ('\\\\' == path.substring(0, 2)) return true; // Microsoft Azure absolute path
 }

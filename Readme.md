@@ -25,8 +25,9 @@ $ npm install koa-send
 
 ## Root path
 
-  Note that when `root` is _not_ used you __MUST__ provide an _absolute_
-  path, and this path must not contain "..", protecting developers from
+  Note that `root` is required, defaults to `''` and will be resolved,
+  removing the leading `/` to make the path relative and this
+  path must not contain "..", protecting developers from
   concatenating user input. If you plan on serving files based on
   user input supply a `root` directory from which to serve from.
 
