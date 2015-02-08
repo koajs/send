@@ -58,7 +58,7 @@ function send(ctx, path, opts) {
     path = resolvePath(root, path);
 
     // hidden file support, ignore
-    if (!hidden && leadingDot(path)) return;
+    if (!hidden && isHidden(root, path)) return;
 
     // serve gzipped file when possible
     if (encoding === 'gzip' && gzip && (yield fs.exists(path + '.gz'))) {
@@ -93,8 +93,12 @@ function send(ctx, path, opts) {
  * Check if it's hidden.
  */
 
-function leadingDot(path) {
-  return '.' == basename(path)[0];
+function isHidden(root, path) {
+  path = path.substr(root.length).split('/');
+  for(var i = 0; i < path.length; i++) {
+    if(path[i][0] === '.') return true;
+  }
+  return false;
 }
 
 /**
