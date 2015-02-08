@@ -311,6 +311,49 @@ describe('send(ctx, file)', function(){
       })
     })
   })
+  describe('.hidden option', function() {
+    describe('when trying to get a hidden file', function(){
+      it('should 404', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/.hidden');
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(404, done);
+      })
+    })
+
+    describe('when trying to get a file from a hidden directory', function(){
+      it('should 404', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/.private/id_rsa.txt');
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(404, done);
+      })
+    })
+
+    describe('when trying to get a hidden file and .hidden check is turned off', function(){
+      it('should 200', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/.hidden', {hidden: true});
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(200, done);
+      })
+    })
+  });
 
   it('should set the Content-Type', function(done){
     var app = koa();
