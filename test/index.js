@@ -317,7 +317,7 @@ describe('send(ctx, file)', function(){
         var app = koa();
 
         app.use(function *(){
-          yield send(this, __dirname + '/fixtures/.hidden');
+          yield send(this, 'test/fixtures/.hidden');
         });
 
         request(app.listen())
@@ -331,7 +331,7 @@ describe('send(ctx, file)', function(){
         var app = koa();
 
         app.use(function *(){
-          yield send(this, __dirname + '/fixtures/.private/id_rsa.txt');
+          yield send(this, 'test/fixtures/.private/id_rsa.txt');
         });
 
         request(app.listen())
@@ -345,7 +345,7 @@ describe('send(ctx, file)', function(){
         var app = koa();
 
         app.use(function *(){
-          yield send(this, __dirname + '/fixtures/.hidden', {hidden: true});
+          yield send(this, 'test/fixtures/.hidden', {hidden: true});
         });
 
         request(app.listen())
