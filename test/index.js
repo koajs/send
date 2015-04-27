@@ -3,6 +3,7 @@ var request = require('supertest');
 var send = require('..');
 var koa = require('koa');
 var assert = require('assert');
+var fs = require('fs');
 
 describe('send(ctx, file)', function(){
   describe('with no .root', function(){
@@ -276,6 +277,52 @@ describe('send(ctx, file)', function(){
         .expect('Content-Length', 18)
         .expect('{ "name": "tobi" }')
         .expect(200, done);
+      })
+    })
+
+    describe('and If-Modified-Since is given', function(){
+
+      var path = '/user.json';
+      var mtime;
+      before(function(done){
+        fs.stat(__dirname + '/fixtures' + path, function(err, stats) {
+          mtime = stats.mtime;
+          done(err);
+        });
+      });
+
+      function testWithTime(time) {
+        var app = koa();
+
+        app.use(function *(){
+          var sent = yield send(this, path, { root: __dirname + "/fixtures" });
+          assert.equal(sent, __dirname + '/fixtures/user.json');
+        });
+
+        return request(app.listen())
+          .get('/')
+        // Dates specified by 7231 is of second resolution
+          .set('If-Modified-Since', time)
+          .expect('Last-Modified', mtime.toUTCString());
+      }
+
+      describe('a valid date', function(){
+        it('should 304 if not changed', function(done){
+          testWithTime((new Date(mtime.getTime()+1000)).toUTCString())
+            .expect(304, done);
+        })
+
+        it('should serve current version if changed', function(done){
+          testWithTime((new Date(mtime.getTime()-1000)).toUTCString())
+            .expect(200, done);
+        })
+      })
+
+      describe('an invalid date', function() {
+        it('should continue serving', function(done){
+          testWithTime('koa')
+            .expect(200, done);
+        })
       })
     })
 

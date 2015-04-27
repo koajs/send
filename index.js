@@ -78,10 +78,20 @@ function send(ctx, path, opts) {
       throw err;
     }
 
-    // stream
     ctx.set('Last-Modified', stats.mtime.toUTCString());
-    ctx.set('Content-Length', stats.size);
     ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
+
+    // respond 304 if mtime not newer
+    var clientMtime = new Date(ctx.request.get('If-Modified-Since'));
+    if (clientMtime.getTime() === clientMtime.getTime()) { // not NaN
+      if (!(stats.mtime > clientMtime)) {
+        ctx.response.status = 304;
+        return path;
+      }
+    }
+
+    // stream
+    ctx.set('Content-Length', stats.size);
     ctx.type = type(path);
     ctx.body = fs.createReadStream(path);
 
