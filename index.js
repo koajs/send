@@ -78,12 +78,34 @@ function send(ctx, path, opts) {
       throw err;
     }
 
-    // stream
-    ctx.set('Last-Modified', stats.mtime.toUTCString());
-    ctx.set('Content-Length', stats.size);
-    ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
-    ctx.type = type(path);
-    ctx.body = fs.createReadStream(path);
+    var rangeRequest = ctx.request.header.range;
+
+    if (rangeRequest) {
+      // range stream
+      var range = parseRangeHeader(rangeRequest, stats.size);
+      if (!range) {
+        ctx.throw('invalid range request detected', 400);
+      }
+      var start = range.start, end = range.end;
+      if (start >= stats.size || end >= stats.size) {
+        ctx.throw('requested range not satisfiable', 416);
+      }
+      ctx.set('Last-Modified', stats.mtime.toUTCString());
+      ctx.set('Content-Range', 'bytes ' + start + '-' + end + '/' + stats.size);
+      ctx.set('Content-Length', start === end ? 0 : ((end - start) + 1));
+      ctx.set('Cache-Control', 'no-cache');
+      ctx.set('Accept-Ranges', 'bytes');
+      ctx.type = type(path);
+      ctx.status = 206;
+      ctx.body = fs.createReadStream(path, range);
+    } else {
+      // simple stream
+      ctx.set('Last-Modified', stats.mtime.toUTCString());
+      ctx.set('Content-Length', stats.size);
+      ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
+      ctx.type = type(path);
+      ctx.body = fs.createReadStream(path);
+    }
 
     return path;
   }
@@ -115,4 +137,25 @@ function decode(path) {
   } catch (err) {
     return -1;
   }
+}
+
+/**
+ * Parse range header
+ *
+ * @param {String} range rawstring
+ * @return {Object} parsed object. e.g. { start: 0, end: 1000 }
+ * @api private
+ */
+
+function parseRangeHeader(raw, total) {
+  if (!raw) return;
+  var mat = raw.match(/^bytes=([0-9]*)-([0-9]*)$/);
+  if (!mat) return;
+  var start = parseInt(mat[1]);
+  var end   = parseInt(mat[2]);
+  var res   = {
+    start: isNaN(start) ? 0           : start,
+    end:   isNaN(end)   ? (total - 1) : end
+  };
+  return res;
 }
