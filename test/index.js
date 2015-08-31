@@ -310,6 +310,24 @@ describe('send(ctx, file)', function(){
         .expect(200, done);
       })
     })
+
+    it('should return 304 when fresh',function(done){
+      var app = koa();
+      app.use(function *(){
+        yield send(this, '/test/fixtures/user.json');
+      })
+      app = app.callback();
+
+      request(app)
+      .get('/')
+      .expect(200)
+      .end(function(err,res){
+        request(app)
+        .get('/')
+        .set('if-modified-since',res.headers['last-modified'])
+        .expect(304, done)
+      })
+    })
   })
 
   it('should set the Content-Type', function(done){
