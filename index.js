@@ -83,7 +83,13 @@ function send(ctx, path, opts) {
     ctx.set('Content-Length', stats.size);
     ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
     ctx.type = type(path);
-    ctx.body = fs.createReadStream(path);
+
+    // if fresh, 304
+    if(this.fresh){
+      this.status = 304;
+    } else {
+      ctx.body = fs.createReadStream(path);
+    }
 
     return path;
   }
