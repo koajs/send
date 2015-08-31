@@ -85,6 +85,7 @@ function send(ctx, path, opts) {
     ctx.type = type(path);
 
     // if fresh, 304
+    this.status = 200;
     if(this.fresh){
       this.status = 304;
     } else {
