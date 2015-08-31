@@ -86,7 +86,7 @@ function send(ctx, path, opts) {
 
     // if fresh, 304
     this.status = 200;
-    if(this.fresh){
+    if (this.fresh) {
       this.status = 304;
     } else {
       ctx.body = fs.createReadStream(path);
