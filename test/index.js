@@ -315,7 +315,7 @@ describe('send(ctx, file)', function(){
       var app = koa();
       app.use(function *(){
         yield send(this, '/test/fixtures/user.json');
-      })
+      });
       app = app.callback();
 
       request(app)
@@ -325,7 +325,7 @@ describe('send(ctx, file)', function(){
         request(app)
         .get('/')
         .set('if-modified-since',res.headers['last-modified'])
-        .expect(304, done)
+        .expect(304, done);
       })
     })
   })
