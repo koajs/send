@@ -187,6 +187,49 @@ describe('send(ctx, file)', function(){
     })
   })
 
+  describe('when path does not finish with slash and format is disabled', function(){
+    it('should 200', function(done){
+      var app = koa();
+
+      app.use(function *(){
+        var opts = { root: 'test', index: 'index.html' };
+        yield send(this, 'fixtures/world', opts);
+      });
+
+      request(app.listen())
+        .get('/world')
+        .expect(404, done);
+    })
+
+    it('should 200', function(done){
+      var app = koa();
+
+      app.use(function *(){
+        var opts = { root: 'test', index: 'index.html', format: false };
+        yield send(this, 'fixtures/world', opts);
+      });
+
+      request(app.listen())
+        .get('/world')
+        .expect(404, done);
+    })
+  })
+
+  describe('when path does not finish with slash and format is enabled', function(){
+    it('should 200', function(done){
+      var app = koa();
+
+      app.use(function *(){
+        var opts = { root: 'test', index: 'index.html', format: true };
+        yield send(this, 'fixtures/world', opts);
+      });
+
+      request(app.listen())
+        .get('/')
+        .expect(200, done);
+    })
+  })
+
   describe('when path is malformed', function(){
     it('should 400', function(done){
       var app = koa();
