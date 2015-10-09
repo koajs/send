@@ -70,7 +70,17 @@ function send(ctx, path, opts) {
     // stat
     try {
       var stats = yield fs.stat(path);
-      if (stats.isDirectory()) return;
+
+      // Format the path to serve static file servers
+      // and not require a trailing slash for directories,
+      // so that you can do both `/directory` and `/directory/`
+      if (stats.isDirectory()) {
+        if (opts.format) {
+          path += '/' + index;
+        } else {
+          return;
+        }
+      }
     } catch (err) {
       var notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR'];
       if (~notfound.indexOf(err.code)) return;
