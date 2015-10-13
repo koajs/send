@@ -13,11 +13,11 @@
     "index.js"
   ],
   "devDependencies": {
+    "istanbul-harmony": "0",
     "koa": "1",
+    "mocha": "^2.3.3",
     "should": "3",
-    "mocha": "1",
-    "supertest": "0",
-    "istanbul-harmony": "0"
+    "supertest": "0"
   },
   "license": "MIT",
   "dependencies": {
