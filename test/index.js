@@ -188,7 +188,7 @@ describe('send(ctx, file)', function(){
   })
 
   describe('when path does not finish with slash and format is disabled', function(){
-    it('should 200', function(done){
+    it('should 404', function(done){
       var app = koa();
 
       app.use(function *(){
@@ -201,7 +201,7 @@ describe('send(ctx, file)', function(){
         .expect(404, done);
     })
 
-    it('should 200', function(done){
+    it('should 404', function(done){
       var app = koa();
 
       app.use(function *(){
