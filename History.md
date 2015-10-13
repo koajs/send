@@ -1,3 +1,9 @@
+1.4.0 / 2015-10-14
+==================
+
+ * serve directories without a trailing slash
+ * when .hidden option is set, also check hidden directories
+ * bump dependencies
 
 1.3.0 / 2014-09-07
 ==================
@@ -5,7 +11,7 @@
  * add automatically check and serve `.gz` files
  * remove `finished` dependency
  * refactor with `mz`
- 
+
 1.2.3 / 2014-02-11
 ==================
 
