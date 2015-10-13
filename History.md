@@ -1,3 +1,17 @@
+2.0.0 / 2015-10-14
+==================
+
+ * serve directories without a trailing slash, closes #27
+ * when .hidden option is set, also check hidden directories, closes #17
+ * bump deps: mz@2, mocha@2, koa@1
+ * use resolve-path, closes #9
+ * gzip version of file should not be automatically sent
+ * fix test: gzip.json.gz is not valid json data
+
+1.3.1 / 2014-09-08
+==================
+
+ * add .maxAge alias
 
 1.3.0 / 2014-09-07
 ==================
@@ -5,7 +19,7 @@
  * add automatically check and serve `.gz` files
  * remove `finished` dependency
  * refactor with `mz`
- 
+
 1.2.3 / 2014-02-11
 ==================
 
