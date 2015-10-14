@@ -143,6 +143,20 @@ describe('send(ctx, file)', function(){
         .expect(200)
         .expect('html index', done);
       })
+
+      it('should serve it', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          var opts = { root: 'test/fixtures/world', index: 'index.html' };
+          yield send(this, this.path, opts);
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(200)
+        .expect('html index', done);
+      })
     })
   })
 

@@ -37,6 +37,7 @@ function send(ctx, path, opts) {
   // options
   debug('send "%s" %j', path, opts);
   var root = opts.root ? normalize(resolve(opts.root)) : '';
+  var trailingSlash = '/' == path[path.length - 1];
   path = path[0] == '/' ? path.slice(1) : path;
   var index = opts.index;
   var maxage = opts.maxage || opts.maxAge || 0;
@@ -44,7 +45,6 @@ function send(ctx, path, opts) {
   var gzip = opts.gzip || opts.gzip === undefined ? true : false;
 
   return function *(){
-    var trailingSlash = '/' == path[path.length - 1];
     var encoding = this.acceptsEncodings('gzip', 'deflate', 'identity');
 
     // normalize path
