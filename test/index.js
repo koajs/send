@@ -1,6 +1,7 @@
 
 var request = require('supertest');
 var send = require('..');
+var path = require('path');
 var koa = require('koa');
 var assert = require('assert');
 
@@ -281,7 +282,7 @@ describe('send(ctx, file)', function(){
       app.use(function *(){
         var p = '/test/fixtures/user.json';
         var sent = yield send(this, p);
-        assert.equal(sent, __dirname + '/fixtures/user.json');
+        assert.equal(sent, path.resolve(__dirname + '/fixtures/user.json'));
       });
 
       request(app.listen())
@@ -358,7 +359,7 @@ describe('send(ctx, file)', function(){
         app.use(function *(){
           var p = '/test/fixtures/user.json';
           var sent = yield send(this, p, { maxage: 5000 });
-          assert.equal(sent, __dirname + '/fixtures/user.json');
+          assert.equal(sent, path.resolve(__dirname + '/fixtures/user.json'));
         });
 
         request(app.listen())
@@ -373,7 +374,7 @@ describe('send(ctx, file)', function(){
         app.use(function *(){
           var p = '/test/fixtures/user.json';
           var sent = yield send(this, p, { maxage: 1234 });
-          assert.equal(sent, __dirname + '/fixtures/user.json');
+          assert.equal(sent, path.resolve(__dirname + '/fixtures/user.json'));
         });
 
         request(app.listen())
