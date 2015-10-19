@@ -42,6 +42,7 @@ function send(ctx, path, opts) {
   var index = opts.index;
   var maxage = opts.maxage || opts.maxAge || 0;
   var hidden = opts.hidden || false;
+  var format = opts.format || opts.format === undefined ? true : false;
   var gzip = opts.gzip || opts.gzip === undefined ? true : false;
 
   return function *(){
@@ -75,7 +76,7 @@ function send(ctx, path, opts) {
       // and not require a trailing slash for directories,
       // so that you can do both `/directory` and `/directory/`
       if (stats.isDirectory()) {
-        if (opts.format) {
+        if (format) {
           path += '/' + index;
         } else {
           return;

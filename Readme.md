@@ -22,7 +22,7 @@ $ npm install koa-send
  - `hidden` Allow transfer of hidden files. defaults to false
  - `root` Root directory to restrict file access
  - `gzip` Try to serve the gzipped version of a file automatically when `gzip` is supported by a client and if the requested file with `.gz` extension exists. defaults to true.
- - `format` If true, format the path to serve static file servers and not require a trailing slash for directories, so that you can do both `/directory` and `/directory/`
+ - `format` If not `false` (defaults to `true`), format the path to serve static file servers and not require a trailing slash for directories, so that you can do both `/directory` and `/directory/`
 
 ## Root path
 

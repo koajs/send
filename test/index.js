@@ -173,11 +173,11 @@ describe('send(ctx, file)', function(){
       .expect(404, done);
     })
 
-    it('should return undefined', function(done){
+    it('should return undefined if format is set to false', function(done){
       var app = koa();
 
       app.use(function *(){
-        var sent = yield send(this, '/test');
+        var sent = yield send(this, '/test', {format: false});
         assert.equal(sent, undefined);
       });
 
@@ -206,7 +206,7 @@ describe('send(ctx, file)', function(){
       var app = koa();
 
       app.use(function *(){
-        var opts = { root: 'test', index: 'index.html' };
+        var opts = { root: 'test', index: 'index.html', format: false };
         yield send(this, 'fixtures/world', opts);
       });
 
@@ -234,7 +234,7 @@ describe('send(ctx, file)', function(){
       var app = koa();
 
       app.use(function *(){
-        var opts = { root: 'test', index: 'index.html', format: true };
+        var opts = { root: 'test', index: 'index.html' };
         yield send(this, 'fixtures/world', opts);
       });
 
