@@ -13,6 +13,7 @@
     "index.js"
   ],
   "devDependencies": {
+    "babel": "^5.8.23",
     "istanbul-harmony": "0",
     "koa": "1",
     "mocha": "^2.3.3",
@@ -21,13 +22,14 @@
   },
   "license": "MIT",
   "dependencies": {
+    "co": "^4.6.0",
     "debug": "*",
     "mz": "^2.0.0",
     "resolve-path": "^1.2.1"
   },
   "scripts": {
-    "test": "mocha --require should --reporter spec",
-    "test-cov": "node ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --require should",
-    "test-travis": "node ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --require should"
+    "test": "mocha --require should --reporter spec test/index.js test/experimental/index.js",
+    "test-cov": "node ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --require should test/index.js test/experimental/index.js",
+    "test-travis": "node ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --require should test/index.js test/experimental/index.js"
   }
 }

@@ -11,6 +11,7 @@ var basename = path.basename;
 var extname = path.extname;
 var resolve = path.resolve;
 var fs = require('mz/fs');
+var co = require('co');
 
 /**
  * Expose `send()`.
@@ -44,8 +45,8 @@ function send(ctx, path, opts) {
   var hidden = opts.hidden || false;
   var gzip = opts.gzip || opts.gzip === undefined ? true : false;
 
-  return function *(){
-    var encoding = this.acceptsEncodings('gzip', 'deflate', 'identity');
+  return co(function *(){
+    var encoding = ctx.acceptsEncodings('gzip', 'deflate', 'identity');
 
     // normalize path
     path = decode(path);
@@ -96,7 +97,7 @@ function send(ctx, path, opts) {
     ctx.body = fs.createReadStream(path);
 
     return path;
-  }
+  });
 }
 
 /**
