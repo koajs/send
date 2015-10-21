@@ -1,3 +1,12 @@
+
+3.0.0 / 2015-10-21
+==================
+
+ * bump deps
+ * format option defaults to true
+ * fix: enable format only index exists
+ * simplify the declarations of `format`, `gzip`
+
 2.0.1 / 2015-10-14
 ==================
 
