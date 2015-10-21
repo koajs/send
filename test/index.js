@@ -242,6 +242,19 @@ describe('send(ctx, file)', function(){
         .get('/')
         .expect(200, done);
     })
+
+    it('should 404 if no index', function(done){
+      var app = koa();
+
+      app.use(function *(){
+        var opts = { root: 'test' };
+        yield send(this, 'fixtures/world', opts);
+      });
+
+      request(app.listen())
+        .get('/')
+        .expect(404, done);
+    })
   })
 
   describe('when path is malformed', function(){
