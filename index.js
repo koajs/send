@@ -42,8 +42,8 @@ function send(ctx, path, opts) {
   var index = opts.index;
   var maxage = opts.maxage || opts.maxAge || 0;
   var hidden = opts.hidden || false;
-  var format = opts.format || opts.format === undefined ? true : false;
-  var gzip = opts.gzip || opts.gzip === undefined ? true : false;
+  var format = opts.format === false ? false : true;
+  var gzip = opts.gzip === false ? false : true;
 
   return function *(){
     var encoding = this.acceptsEncodings('gzip', 'deflate', 'identity');
