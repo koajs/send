@@ -11,6 +11,7 @@ var basename = path.basename;
 var extname = path.extname;
 var resolve = path.resolve;
 var parse = path.parse;
+var sep = path.sep;
 var fs = require('mz/fs');
 
 /**
@@ -105,7 +106,7 @@ function send(ctx, path, opts) {
  */
 
 function isHidden(root, path) {
-  path = path.substr(root.length).split('/');
+  path = path.substr(root.length).split(sep);
   for(var i = 0; i < path.length; i++) {
     if(path[i][0] === '.') return true;
   }
