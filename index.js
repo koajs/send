@@ -10,6 +10,7 @@ var normalize = path.normalize;
 var basename = path.basename;
 var extname = path.extname;
 var resolve = path.resolve;
+var parse = path.parse;
 var fs = require('mz/fs');
 
 /**
@@ -38,7 +39,7 @@ function send(ctx, path, opts) {
   debug('send "%s" %j', path, opts);
   var root = opts.root ? normalize(resolve(opts.root)) : '';
   var trailingSlash = '/' == path[path.length - 1];
-  path = path[0] == '/' ? path.slice(1) : path;
+  path = path.substr(parse(path).root.length);
   var index = opts.index;
   var maxage = opts.maxage || opts.maxAge || 0;
   var hidden = opts.hidden || false;
