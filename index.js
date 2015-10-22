@@ -78,6 +78,7 @@ function send(ctx, path, opts) {
       if (stats.isDirectory()) {
         if (format && index) {
           path += '/' + index;
+          stats = yield fs.stat(path);
         } else {
           return;
         }
