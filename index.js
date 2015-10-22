@@ -11,6 +11,7 @@ var basename = path.basename;
 var extname = path.extname;
 var resolve = path.resolve;
 var fs = require('mz/fs');
+var co = require('co');
 
 /**
  * Expose `send()`.
@@ -30,23 +31,24 @@ module.exports = send;
  */
 
 function send(ctx, path, opts) {
-  assert(ctx, 'koa context required');
-  assert(path, 'pathname required');
-  opts = opts || {};
+  return co(function *(){
 
-  // options
-  debug('send "%s" %j', path, opts);
-  var root = opts.root ? normalize(resolve(opts.root)) : '';
-  var trailingSlash = '/' == path[path.length - 1];
-  path = path[0] == '/' ? path.slice(1) : path;
-  var index = opts.index;
-  var maxage = opts.maxage || opts.maxAge || 0;
-  var hidden = opts.hidden || false;
-  var format = opts.format === false ? false : true;
-  var gzip = opts.gzip === false ? false : true;
+    assert(ctx, 'koa context required');
+    assert(path, 'pathname required');
+    opts = opts || {};
 
-  return function *(){
-    var encoding = this.acceptsEncodings('gzip', 'deflate', 'identity');
+    // options
+    debug('send "%s" %j', path, opts);
+    var root = opts.root ? normalize(resolve(opts.root)) : '';
+    var trailingSlash = '/' == path[path.length - 1];
+    path = path[0] == '/' ? path.slice(1) : path;
+    var index = opts.index;
+    var maxage = opts.maxage || opts.maxAge || 0;
+    var hidden = opts.hidden || false;
+    var format = opts.format === false ? false : true;
+    var gzip = opts.gzip === false ? false : true;
+
+    var encoding = ctx.acceptsEncodings('gzip', 'deflate', 'identity');
 
     // normalize path
     path = decode(path);
@@ -97,7 +99,7 @@ function send(ctx, path, opts) {
     ctx.body = fs.createReadStream(path);
 
     return path;
-  }
+  });
 }
 
 /**
