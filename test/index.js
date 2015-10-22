@@ -240,6 +240,8 @@ describe('send(ctx, file)', function(){
 
       request(app.listen())
         .get('/')
+        .expect('content-type', 'text/html; charset=utf-8')
+        .expect('content-length', '10')
         .expect(200, done);
     })
 
