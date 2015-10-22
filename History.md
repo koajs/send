@@ -1,4 +1,9 @@
 
+3.0.1 / 2015-10-23
+==================
+
+ * fix stats info when path does not finish with slash and format is enabled, closes #34
+
 3.0.0 / 2015-10-21
 ==================
 
