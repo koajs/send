@@ -1,4 +1,12 @@
 
+3.1.0 / 2015-10-24
+==================
+
+ * return a promise instead of a generator
+ * fix: split path by path.sep instead of slash
+ * fix: strip root correctly on windows
+ * tests: resolve paths for windows
+
 3.0.1 / 2015-10-23
 ==================
 
