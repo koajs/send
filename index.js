@@ -49,6 +49,9 @@ function send(ctx, path, opts) {
     var hidden = opts.hidden || false;
     var format = opts.format === false ? false : true;
     var gzip = opts.gzip === false ? false : true;
+    var xheaders = Object.keys(opts).filter(function(item, index) {
+      return /^[xX][_-]/.test(item);
+    });
 
     var encoding = ctx.acceptsEncodings('gzip', 'deflate', 'identity');
 
@@ -93,6 +96,13 @@ function send(ctx, path, opts) {
       err.status = 500;
       throw err;
     }
+
+    // Set optional headers
+    xheaders.forEach(function(key) {
+      if (opts.hasOwnProperty(key)) {
+        ctx.set(key, opts[key]);
+      }
+    });
 
     // stream
     ctx.set('Last-Modified', stats.mtime.toUTCString());
