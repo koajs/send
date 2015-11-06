@@ -441,6 +441,19 @@ describe('send(ctx, file)', function(){
     .end(done);
   })
 
+  it('should set a custom header', function(done){
+    var app = koa();
+
+    app.use(function *(){
+      yield send(this, '/test/fixtures/user.json', {'X-XSS-Protection': '1; mode=block'});
+    });
+
+    request(app.listen())
+    .get('/')
+    .expect('X-XSS-Protection', '1; mode=block')
+    .end(done);
+  })
+
   it('should set the Content-Length', function(done){
     var app = koa();
 
