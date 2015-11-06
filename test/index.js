@@ -215,19 +215,6 @@ describe('send(ctx, file)', function(){
         .get('/world')
         .expect(404, done);
     })
-
-    it('should 404', function(done){
-      var app = koa();
-
-      app.use(function *(){
-        var opts = { root: 'test', index: 'index.html', format: false };
-        yield send(this, 'fixtures/world', opts);
-      });
-
-      request(app.listen())
-        .get('/world')
-        .expect(404, done);
-    })
   })
 
   describe('when path does not finish with slash and format is enabled', function(){
