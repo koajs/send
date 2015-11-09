@@ -445,7 +445,7 @@ describe('send(ctx, file)', function(){
     var app = koa();
 
     app.use(function *(){
-      yield send(this, '/test/fixtures/user.json', {'X-XSS-Protection': '1; mode=block'});
+      yield send(this, '/test/fixtures/user.json', {'headers': {'X-XSS-Protection': '1; mode=block'}});
     });
 
     request(app.listen())
