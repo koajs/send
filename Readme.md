@@ -48,6 +48,14 @@ app.use(function *(){
 })
 ```
 
+  To serve files with custom headers:
+
+```js
+app.use(function *(){
+  yield send(this, 'path/to/my.js', {'headers': {'Content-Type': 'text/plain'}});
+})
+```
+
 ## Example
 
 ```js
