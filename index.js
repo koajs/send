@@ -48,6 +48,7 @@ function send(ctx, path, opts) {
     var maxage = opts.maxage || opts.maxAge || 0;
     var hidden = opts.hidden || false;
     var format = opts.format === false ? false : true;
+    var typeOverride = opts.type || false;
     var gzip = opts.gzip === false ? false : true;
 
     var encoding = ctx.acceptsEncodings('gzip', 'deflate', 'identity');
@@ -98,7 +99,7 @@ function send(ctx, path, opts) {
     ctx.set('Last-Modified', stats.mtime.toUTCString());
     ctx.set('Content-Length', stats.size);
     ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
-    ctx.type = type(path);
+    ctx.type = typeOverride ? typeOverride : type(path);
     ctx.body = fs.createReadStream(path);
 
     return path;
