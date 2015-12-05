@@ -49,6 +49,25 @@ app.use(function *(){
 })
 ```
 
+## Example (Koa@^2.0) with await/async
+
+```js
+var send = require('koa-send');
+var koa = require('koa');
+var app = koa();
+
+// $ GET /package.json
+// $ GET /
+
+app.use(async function (ctx, next){
+  if ('/' == ctx.path) return ctx.body = 'Try GET /package.json';
+  await send(ctx, __dirname + '/package.json');
+})
+
+app.listen(3000);
+console.log('listening on port 3000');
+```
+
 ## Example
 
 ```js
