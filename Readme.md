@@ -23,6 +23,7 @@ $ npm install koa-send
  - `root` Root directory to restrict file access
  - `gzip` Try to serve the gzipped version of a file automatically when `gzip` is supported by a client and if the requested file with `.gz` extension exists. defaults to true.
  - `format` If not `false` (defaults to `true`), format the path to serve static file servers and not require a trailing slash for directories, so that you can do both `/directory` and `/directory/`
+ - `type` If set, overrides the Content-Type of the served file
 
 ## Root path
 
@@ -46,6 +47,25 @@ app.use(function *(){
 app.use(function *(){
   yield send(this, 'path/to/my.js');
 })
+```
+
+## Example (Koa@^2.0) with await/async
+
+```js
+var send = require('koa-send');
+var Koa = require('koa');
+var app = new Koa();
+
+// $ GET /package.json
+// $ GET /
+
+app.use(async function (ctx, next){
+  if ('/' == ctx.path) return ctx.body = 'Try GET /package.json';
+  await send(ctx, __dirname + '/package.json');
+})
+
+app.listen(3000);
+console.log('listening on port 3000');
 ```
 
 ## Example
