@@ -53,8 +53,8 @@ app.use(function *(){
 
 ```js
 var send = require('koa-send');
-var koa = require('koa');
-var app = koa();
+var Koa = require('koa');
+var app = new Koa();
 
 // $ GET /package.json
 // $ GET /
