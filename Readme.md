@@ -60,7 +60,7 @@ var app = new Koa();
 
 app.use(async function (ctx, next){
   if ('/' == ctx.path) return ctx.body = 'Try GET /package.json';
-  await send(ctx, __dirname + '/package.json');
+  await send(ctx, ctx.path);
 })
 
 app.listen(3000);
@@ -79,7 +79,7 @@ var app = koa();
 
 app.use(function *(){
   if ('/' == this.path) return this.body = 'Try GET /package.json';
-  yield send(this, __dirname + '/package.json');
+  yield send(this, this.path);
 })
 
 app.listen(3000);
