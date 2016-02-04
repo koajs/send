@@ -55,6 +55,12 @@ function send(ctx, path, opts) {
     // normalize path
     path = decode(path);
 
+    // check prefix
+    if (opts.prefix){
+      path = prefix(path, opts.prefix);
+      if (path === false) return;
+    }
+
     if (-1 == path) return ctx.throw('failed to decode', 400);
 
     // index file support
@@ -115,6 +121,13 @@ function isHidden(root, path) {
     if(path[i][0] === '.') return true;
   }
   return false;
+}
+
+/**
+ * path prefix
+ */
+function prefix(path, pre){
+  return path.indexOf(pre) === 0 ?  path.replace(pre + '/','') : false;
 }
 
 /**
