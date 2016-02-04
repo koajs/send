@@ -23,6 +23,7 @@ $ npm install koa-send
  - `root` Root directory to restrict file access
  - `gzip` Try to serve the gzipped version of a file automatically when `gzip` is supported by a client and if the requested file with `.gz` extension exists. defaults to true.
  - `format` If not `false` (defaults to `true`), format the path to serve static file servers and not require a trailing slash for directories, so that you can do both `/directory` and `/directory/`
+ - `prefix` If set `prefix` as 'static' , it will match context.path as `static/{{realpath}}`, and return `{{realpath}}` as file real path. (it can be used at koa-static)
 
 ## Root path
 
