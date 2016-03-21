@@ -49,6 +49,11 @@ function send(ctx, path, opts) {
     var hidden = opts.hidden || false;
     var format = opts.format === false ? false : true;
     var gzip = opts.gzip === false ? false : true;
+    var setHeaders = opts.setHeaders;
+
+    if (setHeaders && typeof setHeaders !== 'function') {
+      throw new TypeError('option setHeaders must be function')
+    }
 
     var encoding = ctx.acceptsEncodings('gzip', 'deflate', 'identity');
 
@@ -94,10 +99,12 @@ function send(ctx, path, opts) {
       throw err;
     }
 
+    if (setHeaders) setHeaders(ctx.res, path, stats);
+
     // stream
-    ctx.set('Last-Modified', stats.mtime.toUTCString());
     ctx.set('Content-Length', stats.size);
-    ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
+    if (!ctx.response.get('Last-Modified')) ctx.set('Last-Modified', stats.mtime.toUTCString());
+    if (!ctx.response.get('Cache-Control')) ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
     ctx.type = type(path);
     ctx.body = fs.createReadStream(path);
 
