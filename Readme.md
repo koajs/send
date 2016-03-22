@@ -56,7 +56,7 @@ The function is called as `fn(res, path, stats)`, where the arguments are:
 * `path`: the resolved file path that is being sent
 * `stats`: the stats object of the file that is being sent.
 
-You should only use the `setHeaders` option when you wish to edit the `Cache-Control`, `Last-Modified` or `Content-Length` headers, because doing it before is useless (it's overwritten), and doing it after is too late because the headers are already sent.
+You should only use the `setHeaders` option when you wish to edit the `Cache-Control` or `Last-Modified` headers, because doing it before is useless (it's overwritten by `send`), and doing it after is too late because the headers are already sent.
 
 If you want to edit any other header, simply set them before calling `send`.
 

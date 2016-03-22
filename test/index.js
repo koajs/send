@@ -496,9 +496,11 @@ describe('send(ctx, file)', function(){
             assert.equal(stats.size, 18);
             assert(res);
 
+            // these can be set
             res.setHeader('Cache-Control', 'max-age=0,must-revalidate');
-            res.setHeader('Content-Length', 9000)
             res.setHeader('Last-Modified', 'foo')
+            // this one can not
+            res.setHeader('Content-Length', 9000)
           }
         });
       });
@@ -506,10 +508,9 @@ describe('send(ctx, file)', function(){
       request(app.listen())
       .get('/')
       .expect(200)
-      // check that they aren't overwritten
       .expect('Cache-Control', 'max-age=0,must-revalidate')
-      .expect('Content-Length', 9000)
       .expect('Last-Modified', 'foo')
+      .expect('Content-Length', 18)
       .end(done);
     })
 

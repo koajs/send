@@ -102,8 +102,8 @@ function send(ctx, path, opts) {
     if (setHeaders) setHeaders(ctx.res, path, stats);
 
     // stream
+    ctx.set('Content-Length', stats.size);
     if (!ctx.response.get('Last-Modified')) ctx.set('Last-Modified', stats.mtime.toUTCString());
-    if (!ctx.response.get('Content-Length')) ctx.set('Content-Length', stats.size);
     if (!ctx.response.get('Cache-Control')) ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
     ctx.type = type(path);
     ctx.body = fs.createReadStream(path);
