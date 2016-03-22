@@ -454,6 +454,85 @@ describe('send(ctx, file)', function(){
     .end(done);
   })
 
+  it('should set Last-Modified', function(done){
+    var app = koa();
+
+    app.use(function *(){
+      yield send(this, '/test/fixtures/user.json');
+    });
+
+    request(app.listen())
+    .get('/')
+    .expect('Last-Modified', /GMT/)
+    .end(done);
+  })
+
+  describe('with setHeaders', function() {
+    it('throws if setHeaders is not a function', function(done){
+      var app = koa();
+
+      app.use(function *(){
+        yield send(this, '/test/fixtures/user.json', {
+          setHeaders: 'foo'
+        });
+      });
+
+      request(app.listen())
+      .get('/')
+      .expect(500)
+      .end(done);
+    })
+
+    it('should not edit already set headers', function(done){
+      var app = koa();
+
+      var testFilePath = '/test/fixtures/user.json';
+      var normalizedTestFilePath = path.normalize(testFilePath);
+
+      app.use(function *(){
+        yield send(this, testFilePath, {
+          setHeaders: function(res, path, stats) {
+            assert.equal(path.substr(-normalizedTestFilePath.length), normalizedTestFilePath);
+            assert.equal(stats.size, 18);
+            assert(res);
+
+            // these can be set
+            res.setHeader('Cache-Control', 'max-age=0,must-revalidate');
+            res.setHeader('Last-Modified', 'foo')
+            // this one can not
+            res.setHeader('Content-Length', 9000)
+          }
+        });
+      });
+
+      request(app.listen())
+      .get('/')
+      .expect(200)
+      .expect('Cache-Control', 'max-age=0,must-revalidate')
+      .expect('Last-Modified', 'foo')
+      .expect('Content-Length', 18)
+      .end(done);
+    })
+
+    it('should correctly pass through regarding usual headers', function(done){
+      var app = koa();
+
+      app.use(function *(){
+        yield send(this, '/test/fixtures/user.json', {
+          setHeaders: function() {}
+        });
+      });
+
+      request(app.listen())
+      .get('/')
+      .expect(200)
+      .expect('Cache-Control', 'max-age=0')
+      .expect('Content-Length', 18)
+      .expect('Last-Modified', /GMT/)
+      .end(done);
+    })
+  })
+
   it('should cleanup on socket error', function(done){
     var app = koa();
     var stream
