@@ -1,9 +1,14 @@
 
+3.2.0 / 2016-03-23
+==================
+
+ * add setHeaders option
+
 3.1.1 / 2016-03-04
 ==================
 
-* bump deps
-* simplify scripts
+ * bump deps
+ * simplify scripts
 
 3.1.0 / 2015-10-24
 ==================
