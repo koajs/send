@@ -48,6 +48,7 @@ function send(ctx, path, opts) {
     var maxage = opts.maxage || opts.maxAge || 0;
     var hidden = opts.hidden || false;
     var format = opts.format === false ? false : true;
+    var extensions = Array.isArray(opts.extensions) ? opts.extensions : false;
     var gzip = opts.gzip === false ? false : true;
     var setHeaders = opts.setHeaders;
 
@@ -75,6 +76,21 @@ function send(ctx, path, opts) {
       path = path + '.gz';
       ctx.set('Content-Encoding', 'gzip');
       ctx.res.removeHeader('Content-Length');
+    }
+
+    if (extensions && !/\..*$/.exec(path)) {
+      var list = [].concat(extensions);
+      for (var i = 0; i < list.length; i++) {
+        var ext = list[i];
+        if (typeof ext !== 'string') {
+          throw new TypeError('option extensions must be array of strings or false');
+        }
+        if (!/^\./.exec(ext)) ext = '.' + ext;
+        if (yield fs.exists(path + ext)) {
+          path = path + ext;
+          break;
+        }
+      }
     }
 
     // stat
