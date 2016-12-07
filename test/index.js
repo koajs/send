@@ -428,6 +428,108 @@ describe('send(ctx, file)', function(){
     })
   });
 
+  describe('.extensions option', function(){
+    describe('when trying to get a file without extension with no .extensions sufficed', function(){
+      it('should 404', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/hello');
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(404, done);
+      })
+    })
+
+    describe('when trying to get a file without extension with no matching .extensions', function(){
+      it('should 404', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/hello', {extensions: ['json','htm','html']});
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(404, done);
+      })
+    })
+
+    describe('when trying to get a file without extension with non array .extensions', function(){
+      it('should 404', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/hello', {extensions: {}});
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(404, done);
+      })
+    })
+
+    describe('when trying to get a file without extension with non string array .extensions', function(){
+      it('should 404', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/hello', {extensions: [2,{},[]]});
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(404, done);
+      })
+    })
+
+    describe('when trying to get a file without extension with matching .extensions sufficed first matched should be sent', function(){
+      it('should 200 and application/json', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/user', {extensions: ['html','json','txt']});
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+        .end(done);
+      })
+    })
+
+    describe('when trying to get a file without extension with matching .extensions sufficed', function(){
+      it('should 200', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/hello', {extensions: ['txt']});
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(200, done);
+      })
+    })
+
+    describe('when trying to get a file without extension with matching doted .extensions sufficed', function(){
+      it('should 200', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/hello', {extensions: ['.txt']});
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(200, done);
+      })
+    })
+  });
+
   it('should set the Content-Type', function(done){
     var app = koa();
 

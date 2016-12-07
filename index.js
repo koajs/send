@@ -48,6 +48,7 @@ function send(ctx, path, opts) {
     var maxage = opts.maxage || opts.maxAge || 0;
     var hidden = opts.hidden || false;
     var format = opts.format === false ? false : true;
+    var extensions = Array.isArray(opts.extensions) ? opts.extensions : false;
     var gzip = opts.gzip === false ? false : true;
     var setHeaders = opts.setHeaders;
 
@@ -75,6 +76,18 @@ function send(ctx, path, opts) {
       path = path + '.gz';
       ctx.set('Content-Encoding', 'gzip');
       ctx.res.removeHeader('Content-Length');
+    }
+
+    if (extensions && !/\..*$/.exec(path)) {
+      for (var i = 0; i < extensions.length; i++) {
+        var extension = extensions[i];
+        if (!(typeof extension === 'string' || extension instanceof String)) continue;
+        if (!/^\./.exec(extension)) extension = '.' + extension;
+        if (yield fs.exists(path + extension)) {
+          path = path + extension;
+          break;
+        }
+      }
     }
 
     // stat
