@@ -448,7 +448,7 @@ describe('send(ctx, file)', function(){
         var app = koa();
 
         app.use(function *(){
-          yield send(this, 'test/fixtures/hello', { extensions: ['json', 'htm', 'html']});
+          yield send(this, 'test/fixtures/hello', { extensions: ['json', 'htm', 'html'] });
         });
 
         request(app.listen())
@@ -462,7 +462,7 @@ describe('send(ctx, file)', function(){
         var app = koa();
 
         app.use(function *(){
-          yield send(this, 'test/fixtures/hello', { extensions: {}});
+          yield send(this, 'test/fixtures/hello', { extensions: {} });
         });
 
         request(app.listen())
@@ -476,7 +476,7 @@ describe('send(ctx, file)', function(){
         var app = koa();
 
         app.use(function *(){
-          yield send(this, 'test/fixtures/hello', { extensions: [2,{},[]]});
+          yield send(this, 'test/fixtures/hello', { extensions: [2,{},[]] });
         });
 
         request(app.listen())
@@ -490,7 +490,7 @@ describe('send(ctx, file)', function(){
         var app = koa();
 
         app.use(function *(){
-          yield send(this, 'test/fixtures/user', { extensions: ['html', 'json', 'txt']});
+          yield send(this, 'test/fixtures/user', { extensions: ['html', 'json', 'txt'] });
         });
 
         request(app.listen())
@@ -506,7 +506,7 @@ describe('send(ctx, file)', function(){
         var app = koa();
 
         app.use(function *(){
-          yield send(this, 'test/fixtures/hello', { extensions: ['txt']});
+          yield send(this, 'test/fixtures/hello', { extensions: ['txt'] });
         });
 
         request(app.listen())
@@ -520,7 +520,7 @@ describe('send(ctx, file)', function(){
         var app = koa();
 
         app.use(function *(){
-          yield send(this, 'test/fixtures/hello', { extensions: ['.txt']});
+          yield send(this, 'test/fixtures/hello', { extensions: ['.txt'] });
         });
 
         request(app.listen())
