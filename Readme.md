@@ -18,12 +18,13 @@ $ npm install koa-send
 
 ## Options
 
- - `maxage` Browser cache max-age in milliseconds. defaults to 0
- - `hidden` Allow transfer of hidden files. defaults to false
+ - `maxage` Browser cache max-age in milliseconds. (defaults to `0`)
+ - `hidden` Allow transfer of hidden files. (defaults to `false`)
  - [`root`](#root-path) Root directory to restrict file access
  - `gzip` Try to serve the gzipped version of a file automatically when `gzip` is supported by a client and if the requested file with `.gz` extension exists. defaults to true.
  - `format` If not `false` (defaults to `true`), format the path to serve static file servers and not require a trailing slash for directories, so that you can do both `/directory` and `/directory/`
  - [`setHeaders`](#setheaders) Function to set custom headers on response.
+ - `extensions` Try to match extensions from passed array to search for file when no extension is sufficed in URL. First found is served. (defaults to `false`)
 
 ### Root path
 

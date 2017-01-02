@@ -178,7 +178,7 @@ describe('send(ctx, file)', function(){
       var app = koa();
 
       app.use(function *(){
-        var sent = yield send(this, '/test', {format: false});
+        var sent = yield send(this, '/test', { format: false });
         assert.equal(sent, undefined);
       });
 
@@ -364,7 +364,7 @@ describe('send(ctx, file)', function(){
 
         request(app.listen())
         .get('/')
-        .expect('Cache-Control','max-age=5')
+        .expect('Cache-Control', 'max-age=5')
         .expect(200, done);
       })
 
@@ -379,7 +379,7 @@ describe('send(ctx, file)', function(){
 
         request(app.listen())
         .get('/')
-        .expect('Cache-Control','max-age=1')
+        .expect('Cache-Control', 'max-age=1')
         .expect(200, done);
       })
     })
@@ -418,7 +418,110 @@ describe('send(ctx, file)', function(){
         var app = koa();
 
         app.use(function *(){
-          yield send(this, 'test/fixtures/.hidden', {hidden: true});
+          yield send(this, 'test/fixtures/.hidden', { hidden: true });
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(200, done);
+      })
+    })
+  });
+
+  describe('.extensions option', function(){
+    describe('when trying to get a file without extension with no .extensions sufficed', function(){
+      it('should 404', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/hello');
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(404, done);
+      })
+    })
+
+    describe('when trying to get a file without extension with no matching .extensions', function(){
+      it('should 404', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/hello', { extensions: ['json', 'htm', 'html'] });
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(404, done);
+      })
+    })
+
+    describe('when trying to get a file without extension with non array .extensions', function(){
+      it('should 404', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/hello', { extensions: {} });
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(404, done);
+      })
+    })
+
+    describe('when trying to get a file without extension with non string array .extensions', function(){
+      it('throws if extensions is not array of strings', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/hello', { extensions: [2,{},[]] });
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(500)
+        .end(done);
+      })
+    })
+
+    describe('when trying to get a file without extension with matching .extensions sufficed first matched should be sent', function(){
+      it('should 200 and application/json', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/user', { extensions: ['html', 'json', 'txt'] });
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+        .end(done);
+      })
+    })
+
+    describe('when trying to get a file without extension with matching .extensions sufficed', function(){
+      it('should 200', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/hello', { extensions: ['txt'] });
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(200, done);
+      })
+    })
+
+    describe('when trying to get a file without extension with matching doted .extensions sufficed', function(){
+      it('should 200', function(done){
+        var app = koa();
+
+        app.use(function *(){
+          yield send(this, 'test/fixtures/hello', { extensions: ['.txt'] });
         });
 
         request(app.listen())
