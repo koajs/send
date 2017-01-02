@@ -472,7 +472,7 @@ describe('send(ctx, file)', function(){
     })
 
     describe('when trying to get a file without extension with non string array .extensions', function(){
-      it('should 404', function(done){
+      it('throws if extensions is not array of strings', function(done){
         var app = koa();
 
         app.use(function *(){
@@ -481,7 +481,8 @@ describe('send(ctx, file)', function(){
 
         request(app.listen())
         .get('/')
-        .expect(404, done);
+        .expect(500)
+        .end(done);
       })
     })
 

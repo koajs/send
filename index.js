@@ -79,9 +79,12 @@ function send(ctx, path, opts) {
     }
 
     if (extensions && !/\..*$/.exec(path)) {
-      for (var i = 0; i < extensions.length; i++) {
-        var extension = extensions[i];
-        if (!(typeof extension === 'string' || extension instanceof String)) continue;
+      var list = [].concat(extensions || []);
+      for (var i = 0; i < list.length; i++) {
+        var extension = list[i];
+        if (!(typeof extension === 'string' || extension instanceof String)) {
+          throw new TypeError('option extensions must be array of strings or false');
+        }
         if (!/^\./.exec(extension)) extension = '.' + extension;
         if (yield fs.exists(path + extension)) {
           path = path + extension;
