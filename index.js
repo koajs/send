@@ -123,6 +123,7 @@ function send(ctx, path, opts) {
     if (!ctx.response.get('Cache-Control')) ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
     ctx.type = type(path);
     ctx.body = fs.createReadStream(path);
+    ctx.length = stats.size;
 
     return path;
   });
