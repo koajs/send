@@ -122,7 +122,14 @@ function send(ctx, path, opts) {
     if (!ctx.response.get('Last-Modified')) ctx.set('Last-Modified', stats.mtime.toUTCString());
     if (!ctx.response.get('Cache-Control')) ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
     ctx.type = type(path);
-    ctx.body = fs.createReadStream(path);
+
+    // if fresh, 304
+    ctx.status = 200;
+    if (ctx.fresh) {
+      ctx.status = 304;
+    } else {
+      ctx.body = fs.createReadStream(path);
+    }
 
     return path;
   });
