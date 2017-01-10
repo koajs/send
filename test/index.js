@@ -301,7 +301,7 @@ describe('send(ctx, file)', function(){
         request(app.listen())
         .get('/')
         .set('Accept-Encoding', 'deflate, identity')
-        .expect('Content-Length', 18)
+        .expect('Content-Length', '18')
         .expect('{ "name": "tobi" }')
         .expect(200, done);
       })
@@ -316,7 +316,7 @@ describe('send(ctx, file)', function(){
         request(app.listen())
         .get('/')
         .set('Accept-Encoding', 'gzip, deflate, identity')
-        .expect('Content-Length', 48)
+        .expect('Content-Length', '48')
         .expect('{ "name": "tobi" }')
         .expect(200, done);
       })
@@ -331,7 +331,7 @@ describe('send(ctx, file)', function(){
         request(app.listen())
         .get('/')
         .set('Accept-Encoding', 'gzip, deflate, identity')
-        .expect('Content-Length', 48)
+        .expect('Content-Length', '48')
         .expect('{ "name": "tobi" }')
         .expect(200, done);
       })
@@ -346,7 +346,7 @@ describe('send(ctx, file)', function(){
         request(app.listen())
         .get('/')
         .set('Accept-Encoding', 'gzip, deflate, identity')
-        .expect('Content-Length', 18)
+        .expect('Content-Length', '18')
         .expect('{ "name": "tobi" }')
         .expect(200, done);
       })
@@ -613,7 +613,7 @@ describe('send(ctx, file)', function(){
       .expect(200)
       .expect('Cache-Control', 'max-age=0,must-revalidate')
       .expect('Last-Modified', 'foo')
-      .expect('Content-Length', 18)
+      .expect('Content-Length', '18')
       .end(done);
     })
 
@@ -630,7 +630,7 @@ describe('send(ctx, file)', function(){
       .get('/')
       .expect(200)
       .expect('Cache-Control', 'max-age=0')
-      .expect('Content-Length', 18)
+      .expect('Content-Length', '18')
       .expect('Last-Modified', /GMT/)
       .end(done);
     })
