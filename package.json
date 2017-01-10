@@ -15,14 +15,14 @@
   "devDependencies": {
     "istanbul": "0",
     "koa": "1",
-    "mocha": "2",
-    "should": "8",
-    "supertest": "1"
+    "mocha": "3",
+    "should": "11",
+    "supertest": "2"
   },
   "license": "MIT",
   "dependencies": {
     "co": "^4.6.0",
-    "debug": "*",
+    "debug": "^2.6.0",
     "mz": "^2.3.1",
     "resolve-path": "^1.3.1"
   },
