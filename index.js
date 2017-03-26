@@ -2,18 +2,19 @@
  * Module dependencies.
  */
 
-var debug = require('debug')('koa-send');
-var resolvePath = require('resolve-path');
-var assert = require('assert');
-var path = require('path');
-var normalize = path.normalize;
-var basename = path.basename;
-var extname = path.extname;
-var resolve = path.resolve;
-var parse = path.parse;
-var sep = path.sep;
-var fs = require('mz/fs');
-var co = require('co');
+const debug = require('debug')('koa-send');
+const resolvePath = require('resolve-path');
+const assert = require('assert');
+const fs = require('mz/fs');
+
+const {
+  normalize,
+  basename,
+  extname,
+  resolve,
+  parse,
+  sep
+} = require('path');
 
 /**
  * Expose `send()`.
@@ -32,100 +33,97 @@ module.exports = send;
  * @api public
  */
 
-function send(ctx, path, opts) {
-  return co(function *(){
+async function send(ctx, path, opts = {}) {
+  assert(ctx, 'koa context required');
+  assert(path, 'pathname required');
 
-    assert(ctx, 'koa context required');
-    assert(path, 'pathname required');
-    opts = opts || {};
+  // options
+  debug('send "%s" %j', path, opts);
+  const root = opts.root ? normalize(resolve(opts.root)) : '';
+  const trailingSlash = '/' == path[path.length - 1];
+  path = path.substr(parse(path).root.length);
+  const index = opts.index;
+  const maxage = opts.maxage || opts.maxAge || 0;
+  const hidden = opts.hidden || false;
+  const format = opts.format === false ? false : true;
+  const extensions = Array.isArray(opts.extensions) ? opts.extensions : false;
+  const gzip = opts.gzip === false ? false : true;
+  const setHeaders = opts.setHeaders;
 
-    // options
-    debug('send "%s" %j', path, opts);
-    var root = opts.root ? normalize(resolve(opts.root)) : '';
-    var trailingSlash = '/' == path[path.length - 1];
-    path = path.substr(parse(path).root.length);
-    var index = opts.index;
-    var maxage = opts.maxage || opts.maxAge || 0;
-    var hidden = opts.hidden || false;
-    var format = opts.format === false ? false : true;
-    var extensions = Array.isArray(opts.extensions) ? opts.extensions : false;
-    var gzip = opts.gzip === false ? false : true;
-    var setHeaders = opts.setHeaders;
+  if (setHeaders && typeof setHeaders !== 'function') {
+    throw new TypeError('option setHeaders must be function')
+  }
 
-    if (setHeaders && typeof setHeaders !== 'function') {
-      throw new TypeError('option setHeaders must be function')
-    }
+  const encoding = ctx.acceptsEncodings('gzip', 'deflate', 'identity');
 
-    var encoding = ctx.acceptsEncodings('gzip', 'deflate', 'identity');
+  // normalize path
+  path = decode(path);
 
-    // normalize path
-    path = decode(path);
+  if (-1 == path) return ctx.throw('failed to decode', 400);
 
-    if (-1 == path) return ctx.throw('failed to decode', 400);
+  // index file support
+  if (index && trailingSlash) path += index;
 
-    // index file support
-    if (index && trailingSlash) path += index;
+  path = resolvePath(root, path);
 
-    path = resolvePath(root, path);
+  // hidden file support, ignore
+  if (!hidden && isHidden(root, path)) return;
 
-    // hidden file support, ignore
-    if (!hidden && isHidden(root, path)) return;
+  // serve gzipped file when possible
+  if (encoding === 'gzip' && gzip && (await fs.exists(path + '.gz'))) {
+    path = path + '.gz';
+    ctx.set('Content-Encoding', 'gzip');
+    ctx.res.removeHeader('Content-Length');
+  }
 
-    // serve gzipped file when possible
-    if (encoding === 'gzip' && gzip && (yield fs.exists(path + '.gz'))) {
-      path = path + '.gz';
-      ctx.set('Content-Encoding', 'gzip');
-      ctx.res.removeHeader('Content-Length');
-    }
-
-    if (extensions && !/\..*$/.exec(path)) {
-      var list = [].concat(extensions);
-      for (var i = 0; i < list.length; i++) {
-        var ext = list[i];
-        if (typeof ext !== 'string') {
-          throw new TypeError('option extensions must be array of strings or false');
-        }
-        if (!/^\./.exec(ext)) ext = '.' + ext;
-        if (yield fs.exists(path + ext)) {
-          path = path + ext;
-          break;
-        }
+  if (extensions && !/\..*$/.exec(path)) {
+    const list = [].concat(extensions);
+    for (let i = 0; i < list.length; i++) {
+      let ext = list[i];
+      if (typeof ext !== 'string') {
+        throw new TypeError('option extensions must be array of strings or false');
+      }
+      if (!/^\./.exec(ext)) ext = '.' + ext;
+      if (await fs.exists(path + ext)) {
+        path = path + ext;
+        break;
       }
     }
+  }
 
-    // stat
-    try {
-      var stats = yield fs.stat(path);
+  // stat
+  let stats
+  try {
+    stats = await fs.stat(path);
 
-      // Format the path to serve static file servers
-      // and not require a trailing slash for directories,
-      // so that you can do both `/directory` and `/directory/`
-      if (stats.isDirectory()) {
-        if (format && index) {
-          path += '/' + index;
-          stats = yield fs.stat(path);
-        } else {
-          return;
-        }
+    // Format the path to serve static file servers
+    // and not require a trailing slash for directories,
+    // so that you can do both `/directory` and `/directory/`
+    if (stats.isDirectory()) {
+      if (format && index) {
+        path += '/' + index;
+        stats = await fs.stat(path);
+      } else {
+        return;
       }
-    } catch (err) {
-      var notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR'];
-      if (~notfound.indexOf(err.code)) return;
-      err.status = 500;
-      throw err;
     }
+  } catch (err) {
+    const notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR'];
+    if (~notfound.indexOf(err.code)) return;
+    err.status = 500;
+    throw err;
+  }
 
-    if (setHeaders) setHeaders(ctx.res, path, stats);
+  if (setHeaders) setHeaders(ctx.res, path, stats);
 
-    // stream
-    ctx.set('Content-Length', stats.size);
-    if (!ctx.response.get('Last-Modified')) ctx.set('Last-Modified', stats.mtime.toUTCString());
-    if (!ctx.response.get('Cache-Control')) ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
-    ctx.type = type(path);
-    ctx.body = fs.createReadStream(path);
+  // stream
+  ctx.set('Content-Length', stats.size);
+  if (!ctx.response.get('Last-Modified')) ctx.set('Last-Modified', stats.mtime.toUTCString());
+  if (!ctx.response.get('Cache-Control')) ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
+  ctx.type = type(path);
+  ctx.body = fs.createReadStream(path);
 
-    return path;
-  });
+  return path;
 }
 
 /**
@@ -134,7 +132,7 @@ function send(ctx, path, opts) {
 
 function isHidden(root, path) {
   path = path.substr(root.length).split(sep);
-  for(var i = 0; i < path.length; i++) {
+  for(let i = 0; i < path.length; i++) {
     if(path[i][0] === '.') return true;
   }
   return false;
