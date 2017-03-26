@@ -1,14 +1,14 @@
 
-var send = require('./');
-var koa = require('koa');
-var app = koa();
+const send = require('./');
+const Koa = require('koa');
+const app = new Koa();
 
 // $ GET /package.json
 // $ GET /
 
-app.use(function *(){
-  if ('/' == this.path) return this.body = 'Try GET /package.json';
-  yield send(this, this.path, { root: __dirname });
+app.use(async (ctx) => {
+  if ('/' == ctx.path) return ctx.body = 'Try GET /package.json';
+  await send(ctx, ctx.path, { root: __dirname });
 })
 
 app.listen(3000);
