@@ -37,16 +37,16 @@ $ npm install koa-send
   For example to serve files from `./public`:
 
 ```js
-app.use(function *(){
-  yield send(this, this.path, { root: __dirname + '/public' });
+app.use(async (ctx) => {
+  await send(ctx, ctx.path, { root: __dirname + '/public' });
 })
 ```
 
   To serve developer specified files:
 
 ```js
-app.use(function *(){
-  yield send(this, 'path/to/my.js');
+app.use(async (ctx) => {
+  await send(ctx, 'path/to/my.js');
 })
 ```
 
@@ -61,38 +61,19 @@ You should only use the `setHeaders` option when you wish to edit the `Cache-Con
 
 If you want to edit any other header, simply set them before calling `send`.
 
-## Example (Koa@2) with async/await
-
-```js
-var send = require('koa-send');
-var Koa = require('koa');
-var app = new Koa();
-
-// $ GET /package.json
-// $ GET /
-
-app.use(async function (ctx, next){
-  if ('/' == ctx.path) return ctx.body = 'Try GET /package.json';
-  await send(ctx, ctx.path);
-})
-
-app.listen(3000);
-console.log('listening on port 3000');
-```
-
 ## Example
 
 ```js
-var send = require('koa-send');
-var koa = require('koa');
-var app = koa();
+const send = require('koa-send');
+const Koa = require('koa');
+const app = new Koa();
 
 // $ GET /package.json
 // $ GET /
 
-app.use(function *(){
-  if ('/' == this.path) return this.body = 'Try GET /package.json';
-  yield send(this, this.path);
+app.use(async (ctx) => {
+  if ('/' == ctx.path) return ctx.body = 'Try GET /package.json';
+  await send(ctx, ctx.path);
 })
 
 app.listen(3000);
