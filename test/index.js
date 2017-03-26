@@ -1,18 +1,18 @@
 
-var request = require('supertest');
-var send = require('..');
-var path = require('path');
-var koa = require('koa');
-var assert = require('assert');
+const request = require('supertest');
+const send = require('..');
+const path = require('path');
+const Koa = require('koa');
+const assert = require('assert');
 
 describe('send(ctx, file)', function(){
   describe('with no .root', function(){
     describe('when the path is absolute', function(){
       it('should 404', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, __dirname + '/fixtures/hello.txt');
+        app.use(async (ctx) => {
+          await send(ctx, __dirname + '/fixtures/hello.txt');
         });
 
         request(app.listen())
@@ -23,10 +23,10 @@ describe('send(ctx, file)', function(){
 
     describe('when the path is relative', function(){
       it('should 200', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, 'test/fixtures/hello.txt');
+        app.use(async (ctx) => {
+          await send(ctx, 'test/fixtures/hello.txt');
         });
 
         request(app.listen())
@@ -38,10 +38,10 @@ describe('send(ctx, file)', function(){
 
     describe('when the path contains ..', function(){
       it('should 403', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, '/../fixtures/hello.txt');
+        app.use(async (ctx) => {
+          await send(ctx, '/../fixtures/hello.txt');
         });
 
         request(app.listen())
@@ -54,11 +54,11 @@ describe('send(ctx, file)', function(){
   describe('with .root', function(){
     describe('when the path is absolute', function(){
       it('should 404', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          var opts = { root: 'test/fixtures' };
-          yield send(this, __dirname + '/fixtures/hello.txt', opts);
+        app.use(async (ctx) => {
+          const opts = { root: 'test/fixtures' };
+          await send(ctx, __dirname + '/fixtures/hello.txt', opts);
         });
 
         request(app.listen())
@@ -69,11 +69,11 @@ describe('send(ctx, file)', function(){
 
     describe('when the path is relative and exists', function(){
       it('should serve the file', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          var opts = { root: 'test/fixtures' };
-          yield send(this, 'hello.txt', opts);
+        app.use(async (ctx) => {
+          const opts = { root: 'test/fixtures' };
+          await send(ctx, 'hello.txt', opts);
         });
 
         request(app.listen())
@@ -85,11 +85,11 @@ describe('send(ctx, file)', function(){
 
     describe('when the path is relative and does not exist', function(){
       it('should 404', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          var opts = { root: 'test/fixtures' };
-          yield send(this, 'something', opts);
+        app.use(async (ctx) => {
+          const opts = { root: 'test/fixtures' };
+          await send(ctx, 'something', opts);
         });
 
         request(app.listen())
@@ -100,11 +100,11 @@ describe('send(ctx, file)', function(){
 
     describe('when the path resolves above the root', function(){
       it('should 403', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          var opts = { root: 'test/fixtures' };
-          yield send(this, '../../package.json', opts);
+        app.use(async (ctx) => {
+          const opts = { root: 'test/fixtures' };
+          await send(ctx, '../../package.json', opts);
         });
 
         request(app.listen())
@@ -115,11 +115,11 @@ describe('send(ctx, file)', function(){
 
     describe('when the path resolves within root', function(){
       it('should 403', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          var opts = { root: 'test/fixtures' };
-          yield send(this, '../../test/fixtures/world/index.html', opts);
+        app.use(async (ctx) => {
+          const opts = { root: 'test/fixtures' };
+          await send(ctx, '../../test/fixtures/world/index.html', opts);
         });
 
         request(app.listen())
@@ -132,11 +132,11 @@ describe('send(ctx, file)', function(){
   describe('with .index', function(){
     describe('when the index file is present', function(){
       it('should serve it', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          var opts = { root: 'test', index: 'index.html' };
-          yield send(this, 'fixtures/world/', opts);
+        app.use(async (ctx) => {
+          const opts = { root: 'test', index: 'index.html' };
+          await send(ctx, 'fixtures/world/', opts);
         });
 
         request(app.listen())
@@ -146,11 +146,11 @@ describe('send(ctx, file)', function(){
       })
 
       it('should serve it', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          var opts = { root: 'test/fixtures/world', index: 'index.html' };
-          yield send(this, this.path, opts);
+        app.use(async (ctx) => {
+          const opts = { root: 'test/fixtures/world', index: 'index.html' };
+          await send(ctx, ctx.path, opts);
         });
 
         request(app.listen())
@@ -163,10 +163,10 @@ describe('send(ctx, file)', function(){
 
   describe('when path is not a file', function(){
     it('should 404', function(done){
-      var app = koa();
+      const app = new Koa();
 
-      app.use(function *(){
-        yield send(this, '/test');
+      app.use(async (ctx) => {
+        await send(ctx, '/test');
       });
 
       request(app.listen())
@@ -175,10 +175,10 @@ describe('send(ctx, file)', function(){
     })
 
     it('should return undefined if format is set to false', function(done){
-      var app = koa();
+      const app = new Koa();
 
-      app.use(function *(){
-        var sent = yield send(this, '/test', { format: false });
+      app.use(async (ctx) => {
+        const sent = await send(ctx, '/test', { format: false });
         assert.equal(sent, undefined);
       });
 
@@ -190,10 +190,10 @@ describe('send(ctx, file)', function(){
 
   describe('when path is a directory', function(){
     it('should 404', function(done){
-      var app = koa();
+      const app = new Koa();
 
-      app.use(function *(){
-        yield send(this, '/test/fixtures');
+      app.use(async (ctx) => {
+        await send(ctx, '/test/fixtures');
       });
 
       request(app.listen())
@@ -204,11 +204,11 @@ describe('send(ctx, file)', function(){
 
   describe('when path does not finish with slash and format is disabled', function(){
     it('should 404', function(done){
-      var app = koa();
+      const app = new Koa();
 
-      app.use(function *(){
-        var opts = { root: 'test', index: 'index.html', format: false };
-        yield send(this, 'fixtures/world', opts);
+      app.use(async (ctx) => {
+        const opts = { root: 'test', index: 'index.html', format: false };
+        await send(ctx, 'fixtures/world', opts);
       });
 
       request(app.listen())
@@ -217,11 +217,11 @@ describe('send(ctx, file)', function(){
     })
 
     it('should 404', function(done){
-      var app = koa();
+      const app = new Koa();
 
-      app.use(function *(){
-        var opts = { root: 'test', index: 'index.html', format: false };
-        yield send(this, 'fixtures/world', opts);
+      app.use(async (ctx) => {
+        const opts = { root: 'test', index: 'index.html', format: false };
+        await send(ctx, 'fixtures/world', opts);
       });
 
       request(app.listen())
@@ -232,11 +232,11 @@ describe('send(ctx, file)', function(){
 
   describe('when path does not finish with slash and format is enabled', function(){
     it('should 200', function(done){
-      var app = koa();
+      const app = new Koa();
 
-      app.use(function *(){
-        var opts = { root: 'test', index: 'index.html' };
-        yield send(this, 'fixtures/world', opts);
+      app.use(async (ctx) => {
+        const opts = { root: 'test', index: 'index.html' };
+        await send(ctx, 'fixtures/world', opts);
       });
 
       request(app.listen())
@@ -247,11 +247,11 @@ describe('send(ctx, file)', function(){
     })
 
     it('should 404 if no index', function(done){
-      var app = koa();
+      const app = new Koa();
 
-      app.use(function *(){
-        var opts = { root: 'test' };
-        yield send(this, 'fixtures/world', opts);
+      app.use(async (ctx) => {
+        const opts = { root: 'test' };
+        await send(ctx, 'fixtures/world', opts);
       });
 
       request(app.listen())
@@ -262,10 +262,10 @@ describe('send(ctx, file)', function(){
 
   describe('when path is malformed', function(){
     it('should 400', function(done){
-      var app = koa();
+      const app = new Koa();
 
-      app.use(function *(){
-        yield send(this, '/%');
+      app.use(async (ctx) => {
+        await send(ctx, '/%');
       });
 
       request(app.listen())
@@ -277,11 +277,11 @@ describe('send(ctx, file)', function(){
   describe('when path is a file', function(){
 
     it('should return the path', function(done){
-      var app = koa();
+      const app = new Koa();
 
-      app.use(function *(){
-        var p = '/test/fixtures/user.json';
-        var sent = yield send(this, p);
+      app.use(async (ctx) => {
+        const p = '/test/fixtures/user.json';
+        const sent = await send(ctx, p);
         assert.equal(sent, path.resolve(__dirname + '/fixtures/user.json'));
       });
 
@@ -292,10 +292,10 @@ describe('send(ctx, file)', function(){
 
     describe('or .gz version when requested and if possible', function(){
       it('should return path', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, '/test/fixtures/gzip.json');
+        app.use(async (ctx) => {
+          await send(ctx, '/test/fixtures/gzip.json');
         });
 
         request(app.listen())
@@ -307,10 +307,10 @@ describe('send(ctx, file)', function(){
       })
 
       it('should return .gz path (gzip option defaults to true)', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, '/test/fixtures/gzip.json');
+        app.use(async (ctx) => {
+          await send(ctx, '/test/fixtures/gzip.json');
         });
 
         request(app.listen())
@@ -322,10 +322,10 @@ describe('send(ctx, file)', function(){
       })
 
       it('should return .gz path when gzip option is turned on', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, '/test/fixtures/gzip.json', { gzip: true });
+        app.use(async (ctx) => {
+          await send(ctx, '/test/fixtures/gzip.json', { gzip: true });
         });
 
         request(app.listen())
@@ -337,10 +337,10 @@ describe('send(ctx, file)', function(){
       })
 
       it('should not return .gz path when gzip option is false', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, '/test/fixtures/gzip.json', { gzip: false });
+        app.use(async (ctx) => {
+          await send(ctx, '/test/fixtures/gzip.json', { gzip: false });
         });
 
         request(app.listen())
@@ -354,11 +354,11 @@ describe('send(ctx, file)', function(){
 
     describe('and max age is specified', function(){
       it('should set max-age in seconds', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          var p = '/test/fixtures/user.json';
-          var sent = yield send(this, p, { maxage: 5000 });
+        app.use(async (ctx) => {
+          const p = '/test/fixtures/user.json';
+          const sent = await send(ctx, p, { maxage: 5000 });
           assert.equal(sent, path.resolve(__dirname + '/fixtures/user.json'));
         });
 
@@ -369,11 +369,11 @@ describe('send(ctx, file)', function(){
       })
 
       it('should truncate fractional values for max-age', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          var p = '/test/fixtures/user.json';
-          var sent = yield send(this, p, { maxage: 1234 });
+        app.use(async (ctx) => {
+          const p = '/test/fixtures/user.json';
+          const sent = await send(ctx, p, { maxage: 1234 });
           assert.equal(sent, path.resolve(__dirname + '/fixtures/user.json'));
         });
 
@@ -387,10 +387,10 @@ describe('send(ctx, file)', function(){
   describe('.hidden option', function(){
     describe('when trying to get a hidden file', function(){
       it('should 404', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, 'test/fixtures/.hidden');
+        app.use(async (ctx) => {
+          await send(ctx, 'test/fixtures/.hidden');
         });
 
         request(app.listen())
@@ -401,10 +401,10 @@ describe('send(ctx, file)', function(){
 
     describe('when trying to get a file from a hidden directory', function(){
       it('should 404', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, 'test/fixtures/.private/id_rsa.txt');
+        app.use(async (ctx) => {
+          await send(ctx, 'test/fixtures/.private/id_rsa.txt');
         });
 
         request(app.listen())
@@ -415,10 +415,10 @@ describe('send(ctx, file)', function(){
 
     describe('when trying to get a hidden file and .hidden check is turned off', function(){
       it('should 200', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, 'test/fixtures/.hidden', { hidden: true });
+        app.use(async (ctx) => {
+          await send(ctx, 'test/fixtures/.hidden', { hidden: true });
         });
 
         request(app.listen())
@@ -431,10 +431,10 @@ describe('send(ctx, file)', function(){
   describe('.extensions option', function(){
     describe('when trying to get a file without extension with no .extensions sufficed', function(){
       it('should 404', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, 'test/fixtures/hello');
+        app.use(async (ctx) => {
+          await send(ctx, 'test/fixtures/hello');
         });
 
         request(app.listen())
@@ -445,10 +445,10 @@ describe('send(ctx, file)', function(){
 
     describe('when trying to get a file without extension with no matching .extensions', function(){
       it('should 404', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, 'test/fixtures/hello', { extensions: ['json', 'htm', 'html'] });
+        app.use(async (ctx) => {
+          await send(ctx, 'test/fixtures/hello', { extensions: ['json', 'htm', 'html'] });
         });
 
         request(app.listen())
@@ -459,10 +459,10 @@ describe('send(ctx, file)', function(){
 
     describe('when trying to get a file without extension with non array .extensions', function(){
       it('should 404', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, 'test/fixtures/hello', { extensions: {} });
+        app.use(async (ctx) => {
+          await send(ctx, 'test/fixtures/hello', { extensions: {} });
         });
 
         request(app.listen())
@@ -473,10 +473,10 @@ describe('send(ctx, file)', function(){
 
     describe('when trying to get a file without extension with non string array .extensions', function(){
       it('throws if extensions is not array of strings', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, 'test/fixtures/hello', { extensions: [2, {}, []] });
+        app.use(async (ctx) => {
+          await send(ctx, 'test/fixtures/hello', { extensions: [2, {}, []] });
         });
 
         request(app.listen())
@@ -488,10 +488,10 @@ describe('send(ctx, file)', function(){
 
     describe('when trying to get a file without extension with matching .extensions sufficed first matched should be sent', function(){
       it('should 200 and application/json', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, 'test/fixtures/user', { extensions: ['html', 'json', 'txt'] });
+        app.use(async (ctx) => {
+          await send(ctx, 'test/fixtures/user', { extensions: ['html', 'json', 'txt'] });
         });
 
         request(app.listen())
@@ -504,10 +504,10 @@ describe('send(ctx, file)', function(){
 
     describe('when trying to get a file without extension with matching .extensions sufficed', function(){
       it('should 200', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, 'test/fixtures/hello', { extensions: ['txt'] });
+        app.use(async (ctx) => {
+          await send(ctx, 'test/fixtures/hello', { extensions: ['txt'] });
         });
 
         request(app.listen())
@@ -518,10 +518,10 @@ describe('send(ctx, file)', function(){
 
     describe('when trying to get a file without extension with matching doted .extensions sufficed', function(){
       it('should 200', function(done){
-        var app = koa();
+        const app = new Koa();
 
-        app.use(function *(){
-          yield send(this, 'test/fixtures/hello', { extensions: ['.txt'] });
+        app.use(async (ctx) => {
+          await send(ctx, 'test/fixtures/hello', { extensions: ['.txt'] });
         });
 
         request(app.listen())
@@ -532,10 +532,10 @@ describe('send(ctx, file)', function(){
   });
 
   it('should set the Content-Type', function(done){
-    var app = koa();
+    const app = new Koa();
 
-    app.use(function *(){
-      yield send(this, '/test/fixtures/user.json');
+    app.use(async (ctx) => {
+      await send(ctx, '/test/fixtures/user.json');
     });
 
     request(app.listen())
@@ -545,10 +545,10 @@ describe('send(ctx, file)', function(){
   })
 
   it('should set the Content-Length', function(done){
-    var app = koa();
+    const app = new Koa();
 
-    app.use(function *(){
-      yield send(this, '/test/fixtures/user.json');
+    app.use(async (ctx) => {
+      await send(ctx, '/test/fixtures/user.json');
     });
 
     request(app.listen())
@@ -558,10 +558,10 @@ describe('send(ctx, file)', function(){
   })
 
   it('should set Last-Modified', function(done){
-    var app = koa();
+    const app = new Koa();
 
-    app.use(function *(){
-      yield send(this, '/test/fixtures/user.json');
+    app.use(async (ctx) => {
+      await send(ctx, '/test/fixtures/user.json');
     });
 
     request(app.listen())
@@ -572,10 +572,10 @@ describe('send(ctx, file)', function(){
 
   describe('with setHeaders', function(){
     it('throws if setHeaders is not a function', function(done){
-      var app = koa();
+      const app = new Koa();
 
-      app.use(function *(){
-        yield send(this, '/test/fixtures/user.json', {
+      app.use(async (ctx) => {
+        await send(ctx, '/test/fixtures/user.json', {
           setHeaders: 'foo'
         });
       });
@@ -587,13 +587,13 @@ describe('send(ctx, file)', function(){
     })
 
     it('should not edit already set headers', function(done){
-      var app = koa();
+      const app = new Koa();
 
-      var testFilePath = '/test/fixtures/user.json';
-      var normalizedTestFilePath = path.normalize(testFilePath);
+      const testFilePath = '/test/fixtures/user.json';
+      const normalizedTestFilePath = path.normalize(testFilePath);
 
-      app.use(function *(){
-        yield send(this, testFilePath, {
+      app.use(async (ctx) => {
+        await send(ctx, testFilePath, {
           setHeaders: function(res, path, stats) {
             assert.equal(path.substr(-normalizedTestFilePath.length), normalizedTestFilePath);
             assert.equal(stats.size, 18);
@@ -618,11 +618,11 @@ describe('send(ctx, file)', function(){
     })
 
     it('should correctly pass through regarding usual headers', function(done){
-      var app = koa();
+      const app = new Koa();
 
-      app.use(function *(){
-        yield send(this, '/test/fixtures/user.json', {
-          setHeaders: function() {}
+      app.use(async (ctx) => {
+        await send(ctx, '/test/fixtures/user.json', {
+          setHeaders: () => {}
         });
       });
 
@@ -637,13 +637,13 @@ describe('send(ctx, file)', function(){
   })
 
   it('should cleanup on socket error', function(done){
-    var app = koa();
+    const app = new Koa();
     var stream
 
-    app.use(function *(){
-      yield send(this, '/test/fixtures/user.json');
-      stream = this.body;
-      this.socket.emit('error', new Error('boom'));
+    app.use(async (ctx) => {
+      await send(ctx, '/test/fixtures/user.json');
+      stream = ctx.body;
+      ctx.socket.emit('error', new Error('boom'));
     })
 
     request(app.listen())
