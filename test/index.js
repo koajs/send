@@ -19,6 +19,26 @@ describe('send(ctx, file)', function(){
         .get('/')
         .expect(404, done);
       })
+
+      it('should throw 404 error', function(done){
+        const app = new Koa()
+
+        let error
+        app.use(async (ctx) => {
+          try {
+            await send(ctx, __dirname + '/fixtures/hello.txt')
+          } catch (err) {
+            error = err
+          }
+        })
+
+        request(app.listen())
+        .get('/')
+        .expect(404, () => {
+          assert.equal(error.status, 404)
+          done()
+        })
+      })
     })
 
     describe('when the path is relative', function(){

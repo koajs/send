@@ -4,6 +4,7 @@
 
 const debug = require('debug')('koa-send');
 const resolvePath = require('resolve-path');
+const createError = require('http-errors');
 const assert = require('assert');
 const fs = require('mz/fs');
 
@@ -59,7 +60,7 @@ async function send(ctx, path, opts = {}) {
   // normalize path
   path = decode(path);
 
-  if (-1 == path) return ctx.throw('failed to decode', 400);
+  if (-1 == path) return ctx.throw(400, 'failed to decode');
 
   // index file support
   if (index && trailingSlash) path += index;
@@ -109,7 +110,9 @@ async function send(ctx, path, opts = {}) {
     }
   } catch (err) {
     const notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR'];
-    if (~notfound.indexOf(err.code)) return;
+    if (notfound.includes(err.code)) {
+      throw createError(404, err);
+    }
     err.status = 500;
     throw err;
   }
