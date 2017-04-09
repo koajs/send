@@ -19,6 +19,7 @@ $ npm install koa-send
 ## Options
 
  - `maxage` Browser cache max-age in milliseconds. (defaults to `0`)
+ - `immutable` Tell the browser the resource is immutable and can be cached indefinitely (defaults to `false`)
  - `hidden` Allow transfer of hidden files. (defaults to `false`)
  - [`root`](#root-path) Root directory to restrict file access
  - `gzip` Try to serve the gzipped version of a file automatically when `gzip` is supported by a client and if the requested file with `.gz` extension exists. defaults to true.

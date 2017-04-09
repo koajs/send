@@ -45,6 +45,7 @@ async function send(ctx, path, opts = {}) {
   path = path.substr(parse(path).root.length);
   const index = opts.index;
   const maxage = opts.maxage || opts.maxAge || 0;
+  const immutable = opts.immutable || false;
   const hidden = opts.hidden || false;
   const format = opts.format === false ? false : true;
   const extensions = Array.isArray(opts.extensions) ? opts.extensions : false;
@@ -122,7 +123,13 @@ async function send(ctx, path, opts = {}) {
   // stream
   ctx.set('Content-Length', stats.size);
   if (!ctx.response.get('Last-Modified')) ctx.set('Last-Modified', stats.mtime.toUTCString());
-  if (!ctx.response.get('Cache-Control')) ctx.set('Cache-Control', 'max-age=' + (maxage / 1000 | 0));
+  if (!ctx.response.get('Cache-Control')) {
+    const directives = ['max-age=' + (maxage / 1000 | 0)];
+    if (opts.immutable) {
+      directives.push('immutable');
+    }
+    ctx.set('Cache-Control', directives.join(','));
+  }
   ctx.type = type(path);
   ctx.body = fs.createReadStream(path);
 
