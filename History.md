@@ -1,4 +1,11 @@
 
+4.0.0 / 2017-04-09
+==================
+
+ * throw error if file not exists, closes #43
+ * remove co, use async function
+ * bump deps
+
 3.3.0 / 2017-01-10
 ==================
 
