@@ -13,6 +13,7 @@
     "index.js"
   ],
   "devDependencies": {
+    "iltorb": "^1.2.1",
     "istanbul": "0",
     "koa": "2",
     "mocha": "3",
