@@ -48,14 +48,13 @@ async function send(ctx, path, opts = {}) {
   const hidden = opts.hidden || false;
   const format = opts.format === false ? false : true;
   const extensions = Array.isArray(opts.extensions) ? opts.extensions : false;
+  const brotli = opts.brotli === false ? false : true;
   const gzip = opts.gzip === false ? false : true;
   const setHeaders = opts.setHeaders;
 
   if (setHeaders && typeof setHeaders !== 'function') {
     throw new TypeError('option setHeaders must be function')
   }
-
-  const encoding = ctx.acceptsEncodings('gzip', 'deflate', 'identity');
 
   // normalize path
   path = decode(path);
@@ -70,8 +69,12 @@ async function send(ctx, path, opts = {}) {
   // hidden file support, ignore
   if (!hidden && isHidden(root, path)) return;
 
-  // serve gzipped file when possible
-  if (encoding === 'gzip' && gzip && (await fs.exists(path + '.gz'))) {
+  // serve brotli file when possible otherwise gzipped file when possible
+  if (ctx.acceptsEncodings('br', 'gzip', 'deflate', 'identity') === 'br' && brotli && (await fs.exists(path + '.br'))) {
+    path = path + '.br';
+    ctx.set('Content-Encoding', 'br');
+    ctx.res.removeHeader('Content-Length');
+  } else if (ctx.acceptsEncodings('gzip', 'deflate', 'identity') === 'gzip' && gzip && (await fs.exists(path + '.gz'))) {
     path = path + '.gz';
     ctx.set('Content-Encoding', 'gzip');
     ctx.res.removeHeader('Content-Length');
