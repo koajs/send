@@ -1,4 +1,10 @@
 
+4.1.0 / 2017-04-26
+==================
+
+ * Add support for Cache-Control: immutable with a new "immutable" option
+ * Added serving of brotli versions of files
+
 4.0.0 / 2017-04-09
 ==================
 
