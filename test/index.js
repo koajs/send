@@ -493,7 +493,46 @@ describe('send(ctx, file)', function(){
         .expect(200, done);
       })
     })
+
+    describe('and immutable is specified', function(){
+      it('should set the immutable directive', function(done){
+        const app = new Koa();
+
+        app.use(async (ctx) => {
+          const p = '/test/fixtures/user.json';
+          const sent = await send(ctx, p, { immutable: true, maxage: 31536000000 });
+          assert.equal(sent, path.resolve(__dirname + '/fixtures/user.json'));
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect('Cache-Control', 'max-age=31536000,immutable')
+        .expect(200, done);
+      })
+    })
   })
+
+  describe('.immutable option', function(){
+    describe('when trying to get a non-existent file', function(){
+      it('should not set the Cache-Control header', function(done){
+        const app = new Koa();
+
+        app.use(async (ctx) => {
+          await send(ctx, 'test/fixtures/does-not-exist.json');
+        });
+
+        request(app.listen())
+        .get('/')
+        .expect(function(res){
+          if (/\bimmutable\b/.test(res.header['cache-control'])) {
+            throw new Error('expected "cache-control" header not to contain immutable directive');
+          }
+        })
+        .expect(404, done);
+      })
+    })
+  })
+
   describe('.hidden option', function(){
     describe('when trying to get a hidden file', function(){
       it('should 404', function(done){
