@@ -133,9 +133,9 @@ async function send (ctx, path, opts = {}) {
     }
     ctx.set('Cache-Control', directives.join(','))
   }
-  ctx.type = type(path)
   ctx.body = fs.createReadStream(path)
-
+  ctx.type = ctx.res.type ? ctx.res.type : type(path);
+  
   return path
 }
 
