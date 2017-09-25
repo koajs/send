@@ -69,16 +69,18 @@ async function send (ctx, path, opts = {}) {
 
   // hidden file support, ignore
   if (!hidden && isHidden(root, path)) return
-
+  let encodingExt = ''
   // serve brotli file when possible otherwise gzipped file when possible
-  if (ctx.acceptsEncodings('br', 'deflate', 'identity') === 'br' && brotli && (await fs.exists(path + '.br'))) {
+  if (ctx.acceptsEncodings('br', 'identity') === 'br' && brotli && (await fs.exists(path + '.br'))) {
     path = path + '.br'
     ctx.set('Content-Encoding', 'br')
     ctx.res.removeHeader('Content-Length')
-  } else if (ctx.acceptsEncodings('gzip', 'deflate', 'identity') === 'gzip' && gzip && (await fs.exists(path + '.gz'))) {
+    encodingExt = '.br'
+  } else if (ctx.acceptsEncodings('gzip', 'identity') === 'gzip' && gzip && (await fs.exists(path + '.gz'))) {
     path = path + '.gz'
     ctx.set('Content-Encoding', 'gzip')
     ctx.res.removeHeader('Content-Length')
+    encodingExt = '.gz'
   }
 
   if (extensions && !/\..*$/.exec(path)) {
@@ -133,9 +135,8 @@ async function send (ctx, path, opts = {}) {
     }
     ctx.set('Cache-Control', directives.join(','))
   }
-  ctx.type = type(path)
+  ctx.type = type(path, encodingExt)
   ctx.body = fs.createReadStream(path)
-
   return path
 }
 
@@ -155,8 +156,8 @@ function isHidden (root, path) {
  * File type.
  */
 
-function type (file) {
-  return extname(basename(file, '.gz'))
+function type (file, ext) {
+  return ext !== '' ? extname(basename(file, ext)) : extname(file)
 }
 
 /**
