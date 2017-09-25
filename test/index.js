@@ -373,6 +373,18 @@ describe('send(ctx, file)', function () {
     })
 
     describe('or .br version when requested and if possible', function () {
+      function parser(res, cb) {
+        const chunks = []
+        res.on('data', chunk => {
+          chunks.push(chunk)
+        })
+        res.on('end', () => {
+          decompress(Buffer.concat(chunks), (err, data) => {
+            cb(err, data.toString())
+          })
+        })
+      }
+
       it('should return path', function (done) {
         const app = new Koa()
 
@@ -397,15 +409,13 @@ describe('send(ctx, file)', function () {
 
         request(app.listen())
         .get('/')
+        .parse(parser)
         .set('Accept-Encoding', 'br, deflate, identity')
         .expect('Content-Length', '22')
         .expect(200)
         .then(({body}) => {
-          decompress(body, (err, output) => {
-            assert.strictEqual(err, null)
-            assert.deepStrictEqual(output.toString(), '{ "name": "tobi" }')
-            done()
-          })
+          assert.deepStrictEqual(body, '{ "name": "tobi" }')
+          done()
         })
       })
 
@@ -418,15 +428,13 @@ describe('send(ctx, file)', function () {
 
         request(app.listen())
         .get('/')
+        .parse(parser)
         .set('Accept-Encoding', 'br, deflate, identity')
         .expect('Content-Length', '22')
         .expect(200)
         .then(({body}) => {
-          decompress(body, (err, output) => {
-            assert.strictEqual(err, null)
-            assert.deepStrictEqual(output.toString(), '{ "name": "tobi" }')
-            done()
-          })
+          assert.deepStrictEqual(body, '{ "name": "tobi" }')
+          done()
         })
       })
 

@@ -138,6 +138,7 @@ async function send (ctx, path, opts = {}) {
   }
   ctx.type = type(path, encodingExt)
   ctx.body = fs.createReadStream(path)
+
   return path
 }
 
