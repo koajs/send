@@ -28,7 +28,8 @@ $ npm install koa-send
  - `format` If not `false` (defaults to `true`), format the path to serve static file servers and not require a trailing slash for directories, so that you can do both `/directory` and `/directory/`.
  - [`setHeaders`](#setheaders) Function to set custom headers on response.
  - `extensions` Try to match extensions from passed array to search for file when no extension is sufficed in URL. First found is served. (defaults to `false`)
-
+ - [`generateIndex`](#generateIndex) Function to generate index file for folder.
+ 
 ### Root path
 
   Note that `root` is required, defaults to `''` and will be resolved,
@@ -52,6 +53,12 @@ app.use(async (ctx) => {
   await send(ctx, 'path/to/my.js');
 })
 ```
+
+### generateIndex
+
+The function is called as `fn(ctx)` or `await fn(ctx)` depending on function type. The arguments are:
+* `ctx`: the koa [context](http://koajs.com/#context)
+
 
 ### setHeaders
 

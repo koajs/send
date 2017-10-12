@@ -182,6 +182,67 @@ describe('send(ctx, file)', function () {
     })
   })
 
+  describe('with generateIndex', function () {
+    describe('when the generateIndex', function () {
+      it('throws if generateIndex is not a function', function (done) {
+        const app = new Koa()
+
+        app.use(async (ctx) => {
+          await send(ctx, '/test/fixtures/user.json', {
+            generateIndex: 'foo'
+          })
+        })
+
+        request(app.listen())
+          .get('/')
+          .expect(500)
+          .end(done)
+      })
+      it('should work with function', function (done) {
+        const app = new Koa()
+
+        app.use(async (ctx) => {
+          const opts = {root: 'test',
+            generateIndex: (ctx) => {
+              return {
+                body: 'index content',
+                type: 'text/plain'
+              }
+            }
+          }
+          await send(ctx, 'fixtures/world/', opts)
+        })
+
+        request(app.listen())
+          .get('/')
+          .expect('content-type', 'text/plain; charset=utf-8')
+          .expect(200)
+          .expect('index content', done)
+      })
+      it('should work with async function', function (done) {
+        const app = new Koa()
+
+        app.use(async (ctx) => {
+          const opts = {root: 'test',
+            generateIndex: (ctx) => {
+              return {
+                body: 'index content',
+                type: 'text/plain'
+              }
+            }
+          }
+          await send(ctx, 'fixtures/world/', opts)
+        })
+
+        request(app.listen())
+          .get('/')
+          .expect('content-type', 'text/plain; charset=utf-8')
+          .expect(200)
+          .expect('index content', done)
+      })
+    })
+  })
+
   describe('when path is not a file', function () {
     it('should 404', function (done) {
       const app = new Koa()

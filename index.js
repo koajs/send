@@ -44,6 +44,7 @@ async function send (ctx, path, opts = {}) {
   const trailingSlash = path[path.length - 1] === '/'
   path = path.substr(parse(path).root.length)
   const index = opts.index
+  const generateIndex = opts.generateIndex || false
   const maxage = opts.maxage || opts.maxAge || 0
   const immutable = opts.immutable || false
   const hidden = opts.hidden || false
@@ -55,6 +56,10 @@ async function send (ctx, path, opts = {}) {
 
   if (setHeaders && typeof setHeaders !== 'function') {
     throw new TypeError('option setHeaders must be function')
+  }
+
+  if (generateIndex && typeof generateIndex !== 'function') {
+    throw new TypeError('option generateIndex must be function')
   }
 
   // normalize path
@@ -101,9 +106,9 @@ async function send (ctx, path, opts = {}) {
 
   // stat
   let stats
+  let indexContent
   try {
     stats = await fs.stat(path)
-
     // Format the path to serve static file servers
     // and not require a trailing slash for directories,
     // so that you can do both `/directory` and `/directory/`
@@ -112,7 +117,16 @@ async function send (ctx, path, opts = {}) {
         path += '/' + index
         stats = await fs.stat(path)
       } else {
-        return
+        if (!generateIndex) return
+        if (isAsyncFunction(generateIndex)) {
+          indexContent = await generateIndex(ctx)
+        } else {
+          indexContent = generateIndex(ctx)
+        }
+        stats = {
+          size: indexContent.body.length,
+          mtime: new Date()
+        }
       }
     }
   } catch (err) {
@@ -136,8 +150,8 @@ async function send (ctx, path, opts = {}) {
     }
     ctx.set('Cache-Control', directives.join(','))
   }
-  ctx.type = type(path, encodingExt)
-  ctx.body = fs.createReadStream(path)
+  ctx.type = indexContent ? indexContent.type : type(path, encodingExt)
+  ctx.body = indexContent ? indexContent.body : fs.createReadStream(path)
 
   return path
 }
@@ -172,4 +186,10 @@ function decode (path) {
   } catch (err) {
     return -1
   }
+}
+
+const AsyncFunction = (async () => {}).constructor;
+
+function isAsyncFunction (fun) {
+  return fun instanceof AsyncFunction
 }
