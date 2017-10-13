@@ -56,8 +56,28 @@ app.use(async (ctx) => {
 
 ### generateIndex
 
-The function is called as `fn(ctx)` or `await fn(ctx)` depending on function type. The arguments are:
+The function is called as `fn(ctx)` or `await fn(ctx)` depending on function type.
+
+The arguments are:
 * `ctx`: the koa [context](http://koajs.com/#context)
+
+This function should return object with `body` and `type` properties.
+
+Example:
+
+```javascript
+app.use(async (ctx) => {
+  const opts = {root: 'test',
+    generateIndex: (ctx) => {
+      return {
+        body: 'index content',
+        type: 'text/plain'
+      }
+    }
+  }
+  await send(ctx, 'fixtures/world/', opts)
+})
+```
 
 
 ### setHeaders
