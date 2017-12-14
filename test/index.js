@@ -373,7 +373,7 @@ describe('send(ctx, file)', function () {
     })
 
     describe('or .br version when requested and if possible', function () {
-      function parser(res, cb) {
+      function parser (res, cb) {
         const chunks = []
         res.on('data', chunk => {
           chunks.push(chunk)
