@@ -683,6 +683,20 @@ describe('send(ctx, file)', function () {
         .expect(200, done)
       })
     })
+
+    describe('when trying to get a file without extension with matching .extensions sufficed with other dots in path', function () {
+      it('should 200', function (done) {
+        const app = new Koa()
+
+        app.use(async (ctx) => {
+          await send(ctx, 'test/fixtures/some.path/index', { extensions: ['json'] })
+        })
+
+        request(app.listen())
+        .get('/')
+        .expect(200, done)
+      })
+    })
   })
 
   it('should set the Content-Type', function (done) {
