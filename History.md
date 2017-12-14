@@ -1,4 +1,9 @@
 
+4.1.2 / 2017-12-14
+==================
+
+ * Fix issue with dots in path when using extensions array (#92)
+
 4.1.1 / 2017-09-25
 ==================
 
