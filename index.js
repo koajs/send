@@ -164,6 +164,7 @@ function extendedPath(path, extensions){
       paths.push({path: [path,ext].join('.'), ext})
     }
   }
+  return paths
 }
 
 /**
