@@ -168,7 +168,7 @@ function extendedPath(path, extensions){
     if ('string' !== typeof ext) {
       throw new TypeError('option extensions must be array of strings or false')
     }
-    ext.replace(/^\./, '')
+    ext = ext.replace(/^\./, '')
     paths.push({path: [path,ext].join('.'), ext:'.'+ext})
   }
   return paths
