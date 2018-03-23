@@ -136,13 +136,11 @@ function compressedPath(ctx, path, brotli, gzip){
   if (brotli && 'br' === ctx.acceptsEncodings('br', 'identity') && ! /\.br$/.test(path)){
     paths.push({path: path + '.br', ext: extname(path), fixup: function(){
       ctx.set('Content-Encoding', 'br')
-      ctx.res.removeHeader('Content-Length')
     }})
   }
   if (gzip && 'gzip' === ctx.acceptsEncodings('gzip', 'identity') && ! /\.gz$/.test(path)){
     paths.push({path: path + '.gz', ext: extname(path), fixup: function(){
       ctx.set('Content-Encoding', 'gzip')
-      ctx.res.removeHeader('Content-Length')
     }})
   }
   return paths
