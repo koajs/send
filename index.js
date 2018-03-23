@@ -152,15 +152,12 @@ function compressedPath(ctx, path, brotli, gzip){
 
 function extendedPath(path, extensions){
   let paths = []
-  if (extensions && !/\.[^/]*$/.test(path)) {
-    const list = [].concat(extensions)
-    for (ext of list){
-      if ('string' !== typeof ext) {
-        throw new TypeError('option extensions must be array of strings or false')
-      }
-      ext.replace(/^\./, '')
-      paths.push({path: [path,ext].join('.'), ext:'.'+ext})
+  for (ext of [].concat(extensions||[])){
+    if ('string' !== typeof ext) {
+      throw new TypeError('option extensions must be array of strings or false')
     }
+    ext.replace(/^\./, '')
+    paths.push({path: [path,ext].join('.'), ext:'.'+ext})
   }
   return paths
 }
