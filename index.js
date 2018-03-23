@@ -61,85 +61,117 @@ async function send (ctx, path, opts = {}) {
   path = decode(path)
 
   if (path === -1) return ctx.throw(400, 'failed to decode')
-
-  // index file support
-  if (index && trailingSlash) path += index
-
   path = resolvePath(root, path)
 
-  // hidden file support, ignore
-  if (!hidden && isHidden(root, path)) return
+  /**
+   * Create a list of all possible matches for the given path and options
+   * The list will be in order of preferred match, namely, for each possible index:
+   * A brotli version of the index
+   * A gzip version of the index
+   * The index
+   * A brotli version of the index with one of its extensions
+   * A gip version of the index with one of its extensions
+   * The index with one of its extension
+   */
+  let paths = [].concat(trailingSlash ? index : [''].concat(format ? index : [])) // All of the possible index files
+  .map(i=>path + (i ? '/' : '') + i) // The permutations of the path with all of the possible indexes
+  .reduce((p,c)=>{ // each c is a possible match. Collect the compressed and extended versions and the compressed versions of the extended versions
+    let eP = extensions ? extendedPath(c, extensions) : []
+    return p.concat(
+      compressedPath(ctx, c, brotli, gzip)
+      ,{path:c, ext: extname(c)}
+      ,eP.reduce((o,n)=>o.concat(compressedPath(ctx, n.path, brotli, gzip), n), []) 
+    )
+  }, [])
 
-  let encodingExt = ''
-  // serve brotli file when possible otherwise gzipped file when possible
-  if (ctx.acceptsEncodings('br', 'identity') === 'br' && brotli && (await fs.exists(path + '.br'))) {
-    path = path + '.br'
-    ctx.set('Content-Encoding', 'br')
-    ctx.res.removeHeader('Content-Length')
-    encodingExt = '.br'
-  } else if (ctx.acceptsEncodings('gzip', 'identity') === 'gzip' && gzip && (await fs.exists(path + '.gz'))) {
-    path = path + '.gz'
-    ctx.set('Content-Encoding', 'gzip')
-    ctx.res.removeHeader('Content-Length')
-    encodingExt = '.gz'
-  }
-
-  if (extensions && !/\.[^/]*$/.exec(path)) {
-    const list = [].concat(extensions)
-    for (let i = 0; i < list.length; i++) {
-      let ext = list[i]
-      if (typeof ext !== 'string') {
-        throw new TypeError('option extensions must be array of strings or false')
-      }
-      if (!/^\./.exec(ext)) ext = '.' + ext
-      if (await fs.exists(path + ext)) {
-        path = path + ext
-        break
-      }
-    }
-  }
-
-  // stat
-  let stats
-  try {
-    stats = await fs.stat(path)
-
-    // Format the path to serve static file servers
-    // and not require a trailing slash for directories,
-    // so that you can do both `/directory` and `/directory/`
-    if (stats.isDirectory()) {
-      if (format && index) {
-        path += '/' + index
-        stats = await fs.stat(path)
-      } else {
+  for (let candidate of paths) {
+    // hidden file support, ignore
+    if (!hidden && isHidden(root, candidate.path)){
+      if (Object.is(candidate, paths[paths.length-1]))
         return
+      else
+        continue
+    }
+
+    // stat
+    let stats
+    try {
+      stats = await fs.stat(candidate.path)
+      if (stats.isDirectory()){
+        if (Object.is(candidate, paths[paths.length-1]))
+          return
+        else
+          continue
       }
+    } catch (err) {
+      const notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR']
+      if (notfound.includes(err.code)) {
+        if (Object.is(candidate, paths[paths.length-1]))
+          throw createError(404, err)
+        else
+          continue
+      }
+      err.status = 500
+      throw err
     }
-  } catch (err) {
-    const notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR']
-    if (notfound.includes(err.code)) {
-      throw createError(404, err)
+
+    /**
+     * The current candidate permutation exists and is not a directory
+     * We will serve this and be done
+     */
+    if (setHeaders) setHeaders(ctx.res, candidate.path, stats)
+
+    // stream
+    ctx.set('Content-Length', stats.size)
+    if (!ctx.response.get('Last-Modified')) ctx.set('Last-Modified', stats.mtime.toUTCString())
+    if (!ctx.response.get('Cache-Control')) {
+      const directives = ['max-age=' + (maxage / 1000 | 0)]
+      if (immutable) {
+        directives.push('immutable')
+      }
+      ctx.set('Cache-Control', directives.join(','))
     }
-    err.status = 500
-    throw err
+    ctx.type = candidate.ext
+    if (candidate.fixup) candidate.fixup()
+    ctx.body = fs.createReadStream(candidate.path)
+    return candidate.path
   }
+}
 
-  if (setHeaders) setHeaders(ctx.res, path, stats)
+/**
+ * Return permutations of the path appended with compression option extensions
+ */
 
-  // stream
-  ctx.set('Content-Length', stats.size)
-  if (!ctx.response.get('Last-Modified')) ctx.set('Last-Modified', stats.mtime.toUTCString())
-  if (!ctx.response.get('Cache-Control')) {
-    const directives = ['max-age=' + (maxage / 1000 | 0)]
-    if (immutable) {
-      directives.push('immutable')
-    }
-    ctx.set('Cache-Control', directives.join(','))
+function compressedPath(ctx, path, brotli, gzip){
+  let paths = []
+  // serve brotli file when possible otherwise gzipped file when possible
+  if (brotli && 'br' === ctx.acceptsEncodings('br', 'identity') && ! /\.br$/.test(path)){
+    paths.push({path: path + '.br', ext: extname(path), fixup: function(){
+      ctx.set('Content-Encoding', 'br')
+    }})
   }
-  ctx.type = type(path, encodingExt)
-  ctx.body = fs.createReadStream(path)
+  if (gzip && 'gzip' === ctx.acceptsEncodings('gzip', 'identity') && ! /\.gz$/.test(path)){
+    paths.push({path: path + '.gz', ext: extname(path), fixup: function(){
+      ctx.set('Content-Encoding', 'gzip')
+    }})
+  }
+  return paths
+}
 
-  return path
+/**
+ * Return permutations of the path appended with option extensions
+ */
+
+function extendedPath(path, extensions){
+  let paths = []
+  for (ext of extensions){
+    if ('string' !== typeof ext) {
+      throw new TypeError('option extensions must be array of strings or false')
+    }
+    ext = ext.replace(/^\./, '')
+    paths.push({path: [path,ext].join('.'), ext:'.'+ext})
+  }
+  return paths
 }
 
 /**
@@ -152,14 +184,6 @@ function isHidden (root, path) {
     if (path[i][0] === '.') return true
   }
   return false
-}
-
-/**
- * File type.
- */
-
-function type (file, ext) {
-  return ext !== '' ? extname(basename(file, ext)) : extname(file)
 }
 
 /**
