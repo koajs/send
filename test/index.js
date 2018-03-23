@@ -180,6 +180,33 @@ describe('send(ctx, file)', function () {
         .expect('html index', done)
       })
     })
+
+    describe('when the index file is not present', function () {
+      it('should 404 if the index is a directory', function (done) {
+        const app = new Koa()
+
+        app.use(async (ctx) => {
+          const opts = { root: 'test', index: 'index', extensions:['html', 'htm'] }
+          await send(ctx, 'fixtures/', opts)
+        })
+
+        request(app.listen())
+        .get('/')
+        .expect(404, done)
+      })
+
+      it('should 404 if the index is a directory', function (done) {
+        const app = new Koa()
+
+        app.use(async (ctx) => {
+          const opts = { root: 'test', index: 'world' }
+          await send(ctx, 'fixtures/', opts)
+        })
+
+        request(app.listen())
+        .get('/')
+        .expect(404, done)
+      })
   })
 
   describe('when path is not a file', function () {
@@ -458,6 +485,21 @@ describe('send(ctx, file)', function () {
 
         app.use(async (ctx) => {
           await send(ctx, '/test/fixtures/gzip.json', { brotli: false })
+        })
+
+        request(app.listen())
+        .get('/')
+        .set('Accept-Encoding', 'br, gzip, deflate, identity')
+        .expect('Content-Length', '48')
+        .expect('{ "name": "tobi" }')
+        .expect(200, done)
+      })
+
+      it('should return .gz path when brotli is unavailable', function (done) {
+        const app = new Koa()
+
+        app.use(async (ctx) => {
+          await send(ctx, '/test/fixtures/br.json')
         })
 
         request(app.listen())
