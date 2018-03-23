@@ -84,31 +84,42 @@ async function send (ctx, path, opts = {}) {
     )
   }, [])
 
-  for (path of paths) {
+  for (let candidate of paths) {
     // hidden file support, ignore
-    if (!hidden && isHidden(root, path.path)) continue
+    if (!hidden && isHidden(root, candidate.path)){
+      if (Object.is(candidate, paths[paths.length-1]))
+        return
+      else
+        continue
+    }
 
     // stat
     let stats
     try {
-      stats = await fs.stat(path.path)
-      if (stats.isDirectory()) continue
+      stats = await fs.stat(candidate.path)
+      if (stats.isDirectory()){
+        if (Object.is(candidate, paths[paths.length-1]))
+          return
+        else
+          continue
+      }
     } catch (err) {
       const notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR']
       if (notfound.includes(err.code)) {
-        if (Object.is(path, paths[paths.length-1]))
+        if (Object.is(candidate, paths[paths.length-1]))
           throw createError(404, err)
-        continue
+        else
+          continue
       }
       err.status = 500
       throw err
     }
 
     /**
-     * The current path permutation exists and is not a directory
+     * The current candidate permutation exists and is not a directory
      * We will serve this and be done
      */
-    if (setHeaders) setHeaders(ctx.res, path.path, stats)
+    if (setHeaders) setHeaders(ctx.res, candidate.path, stats)
 
     // stream
     ctx.set('Content-Length', stats.size)
@@ -120,10 +131,10 @@ async function send (ctx, path, opts = {}) {
       }
       ctx.set('Cache-Control', directives.join(','))
     }
-    ctx.type = path.ext
-    if (path.fixup) path.fixup()
-    ctx.body = fs.createReadStream(path.path)
-    return path.path
+    ctx.type = candidate.ext
+    if (candidate.fixup) candidate.fixup()
+    ctx.body = fs.createReadStream(candidate.path)
+    return candidate.path
   }
 }
 
