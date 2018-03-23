@@ -73,7 +73,7 @@ async function send (ctx, path, opts = {}) {
    * A gip version of the index with one of its extensions
    * The index with one of its extension
    */
-  let paths = [].concat(trailingSlash ? index : [].concat('', index)) // All of the possible index files
+  let paths = [].concat(trailingSlash ? index : [''].concat(format ? index : [])) // All of the possible index files
   .map(i=>path + (i ? '/' : '') + i) // The permutations of the path with all of the possible indexes
   .reduce((p,c)=>{ // each c is a possible match. Collect the compressed and extended versions and the compressed versions of the extended versions
     let eP = extendedPath(c)
