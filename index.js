@@ -91,7 +91,7 @@ async function send (ctx, path, opts = {}) {
     // stat
     let stats
     try {
-      stats = await fs.stat(path)
+      stats = await fs.stat(path.path)
       if (stats.isDirectory()) continue
     } catch (err) {
       const notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR']
@@ -106,7 +106,7 @@ async function send (ctx, path, opts = {}) {
      * The current path permutation exists and is not a directory
      * We will serve this and be done
      */
-    if (setHeaders) setHeaders(ctx.res, path, stats)
+    if (setHeaders) setHeaders(ctx.res, path.path, stats)
 
     // stream
     ctx.set('Content-Length', stats.size)
