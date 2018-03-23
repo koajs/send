@@ -207,6 +207,7 @@ describe('send(ctx, file)', function () {
         .get('/')
         .expect(404, done)
       })
+    })
   })
 
   describe('when path is not a file', function () {
