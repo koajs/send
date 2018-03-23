@@ -96,6 +96,8 @@ async function send (ctx, path, opts = {}) {
     } catch (err) {
       const notfound = ['ENOENT', 'ENAMETOOLONG', 'ENOTDIR']
       if (notfound.includes(err.code)) {
+        if (Object.is(path, paths[paths.length-1]))
+          throw createError(404, err)
         continue
       }
       err.status = 500
@@ -123,7 +125,6 @@ async function send (ctx, path, opts = {}) {
     ctx.body = fs.createReadStream(path.path)
     return path.path
   }
-  throw createError(404)
 }
 
 /**
