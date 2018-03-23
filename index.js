@@ -80,7 +80,7 @@ async function send (ctx, path, opts = {}) {
     return p.concat(
       compressedPath(ctx, c, brotli, gzip)
       ,{path:c, ext: extname(c)}
-      ,eP.reduce((o,n)=>o.concat(compressedPath(ctx, n, brotli, gzip), n), []) 
+      ,eP.reduce((o,n)=>o.concat(compressedPath(ctx, n.path, brotli, gzip), n), []) 
     )
   }, [])
 
@@ -164,7 +164,7 @@ function compressedPath(ctx, path, brotli, gzip){
 
 function extendedPath(path, extensions){
   let paths = []
-  for (ext of [].concat(extensions||[])){
+  for (ext of extensions){
     if ('string' !== typeof ext) {
       throw new TypeError('option extensions must be array of strings or false')
     }
