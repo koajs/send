@@ -47,6 +47,6 @@
     "test-travis": "istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --require should"
   },
   "engines": {
-    "node": ">= 7.6.0"
+    "node": ">= 6.11.0"
   }
 }
