@@ -124,8 +124,6 @@ async function send (ctx, path, opts = {}) {
     throw err
   }
 
-  if (setHeaders) setHeaders(ctx.res, path, stats)
-
   // stream
   ctx.set('Content-Length', stats.size)
   if (!ctx.response.get('Last-Modified')) ctx.set('Last-Modified', stats.mtime.toUTCString())
@@ -136,7 +134,11 @@ async function send (ctx, path, opts = {}) {
     }
     ctx.set('Cache-Control', directives.join(','))
   }
+
+  // set content-type
   ctx.type = type(path, encodingExt)
+  if (setHeaders) setHeaders(ctx.res, path, stats)
+
   ctx.body = fs.createReadStream(path)
 
   return path
