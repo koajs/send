@@ -130,44 +130,44 @@ async function send (ctx, path, opts = {}) {
   ctx.set('Accept-Ranges', 'bytes')
   if (!ctx.response.get('Last-Modified')) ctx.set('Last-Modified', stats.mtime.toUTCString())
   if (!ctx.response.get('Cache-Control')) {
-      const directives = ['max-age=' + (maxage / 1000 | 0)]
-      if (immutable) {
-          directives.push('immutable')
-      }
-      ctx.set('Cache-Control', directives.join(','))
+    const directives = ['max-age=' + (maxage / 1000 | 0)]
+    if (immutable) {
+      directives.push('immutable')
+    }
+    ctx.set('Cache-Control', directives.join(','))
   }
 
   ctx.type = type(path, encodingExt)
   if (ctx.headers.range) {
-      try {
-          const rangeHeader = ctx.headers.range
-          const unit = /^(bytes)=/.exec(rangeHeader)[1]
-          const rangeValue = /=(.*)$/.exec(rangeHeader)[1]
-          const range = /^[\w]*?(\d*)-(\d*)$/.exec(rangeValue)
+    try {
+      const rangeHeader = ctx.headers.range
+      const unit = /^(bytes)=/.exec(rangeHeader)[1]
+      const rangeValue = /=(.*)$/.exec(rangeHeader)[1]
+      const range = /^[\w]*?(\d*)-(\d*)$/.exec(rangeValue)
 
-          var start = range[1] ? parseInt(range[1]) : undefined
-          var end = range[2] ? parseInt(range[2]) : stats.size - 1
+      var start = range[1] ? parseInt(range[1]) : undefined
+      var end = range[2] ? parseInt(range[2]) : stats.size - 1
 
-          if (typeof start == 'undefined') {
-              start = (stats.size - end)
-              end = (stats.size - 1)
-          }
-
-          const chunksize = (end - start + 1)
-
-          ctx.status = 206
-          ctx.set('Content-Length', chunksize)
-          ctx.set('Content-Range', `bytes ${start}-${end}/${stats.size}`)
-          ctx.body = fs.createReadStream(path, {start, end})
-      } catch (err) {
-          ctx.status = 416
-          ctx.set('Content-Length', stats.size)
-          ctx.set('Content-Range', `bytes */${stats.size}`)
-          ctx.body = fs.createReadStream(path)
+      if (typeof start == 'undefined') {
+        start = (stats.size - end)
+        end = (stats.size - 1)
       }
-  } else {
+
+      const chunksize = (end - start + 1)
+
+      ctx.status = 206
+      ctx.set('Content-Length', chunksize)
+      ctx.set('Content-Range', `bytes ${start}-${end}/${stats.size}`)
+      ctx.body = fs.createReadStream(path, {start, end})
+    } catch (err) {
+      ctx.status = 416
       ctx.set('Content-Length', stats.size)
+      ctx.set('Content-Range', `bytes */${stats.size}`)
       ctx.body = fs.createReadStream(path)
+    }
+  } else {
+    ctx.set('Content-Length', stats.size)
+    ctx.body = fs.createReadStream(path)
   }
 
   return path

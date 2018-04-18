@@ -64,6 +64,12 @@ You should only use the `setHeaders` option when you wish to edit the `Cache-Con
 
 If you want to edit any other header, simply set them before calling `send`.
 
+
+### partial requests / byte ranges
+
+koa-send supports some of the range request specification [https://tools.ietf.org/html/rfc7233#section-4.2](here).
+Note that video seeking on chrome works.
+
 ## Example
 
 ```js
