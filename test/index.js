@@ -725,6 +725,70 @@ describe('send(ctx, file)', function () {
     .end(done)
   })
 
+  describe('partial requests', () => {
+    it('should attach the Accept-Ranges header with bytes', () => {
+      const app = new Koa()
+
+      app.use(async (ctx) => {
+        await send(ctx, '/test/fixtures/partial.txt')
+      })
+
+      return request(app.listen())
+        .get('/')
+        .expect('Accept-Ranges', 'bytes')
+    })
+    describe('with Range header', function () {
+      var app = undefined
+      beforeEach(() => {
+        app = new Koa()
+        app.use(async (ctx) => {
+          await send(ctx, '/test/fixtures/partial.txt')
+        })
+      })
+      it('should send status 206 for partial requests', () => {
+         return request(app.listen())
+           .get('/')
+           .set('Range', 'bytes=0-1')
+           .expect('Content-Length', '2')
+           .expect('Content-Range', 'bytes 0-1/8')
+           .expect(206, '12')
+      })
+      it('should support single part ranges', () => {
+        return request(app.listen())
+          .get('/')
+          .set('Range', 'bytes=0-5')
+          .expect('Content-Length', '6')
+          .expect('Content-Range', 'bytes 0-5/8')
+          .expect(206, '123456')
+      })
+      it('should support ranges that are indexed negatively', () => {
+        return request(app.listen())
+          .get('/')
+          .set('Range', 'bytes=-1')
+          .expect('Content-Length', '1')
+          .expect('Content-Range', 'bytes 7-7/8')
+          .expect(206, '8')
+      })
+      it('should support ranges without an end point', () => {
+        return request(app.listen())
+          .get('/')
+          .set('Range', 'bytes=4-')
+          .expect('Content-Length', '4')
+          .expect('Content-Range', 'bytes 4-7/8')
+          .expect(206, '5678')
+      })
+      it('should send 416 if the range is unsatisfiable', () => {
+        return request(app.listen())
+          .get('/')
+          .set('Range', 'foos=0-')
+          .expect('Content-Range', 'bytes */8')
+          .expect(416, '12345678')
+      })
+
+    })
+  })
+
+
   it('should set Last-Modified', function (done) {
     const app = new Koa()
 
