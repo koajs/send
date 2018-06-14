@@ -725,6 +725,22 @@ describe('send(ctx, file)', function () {
     .end(done)
   })
 
+  it('should set the Content-Type', function (done) {
+    const app = new Koa()
+
+    const testFilePath = path.normalize('/test/fixtures/world/index.html')
+
+    app.use(async (ctx) => {
+      ctx.type = 'text/plain'
+      await send(ctx, testFilePath)
+    })
+
+    request(app.listen())
+    .get('/')
+    .expect('Content-Type', /text\/plain/)
+    .end(done)
+  })
+
   it('should set Last-Modified', function (done) {
     const app = new Koa()
 
