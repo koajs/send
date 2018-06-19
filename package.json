@@ -2,7 +2,7 @@
   "name": "koa-send",
   "description": "Transfer static files",
   "repository": "koajs/send",
-  "version": "4.1.3",
+  "version": "5.0.0",
   "keywords": [
     "koa",
     "file",
