@@ -147,11 +147,9 @@ async function send (ctx, path, opts = {}) {
  */
 
 function isHidden (root, path) {
-  path = path.substr(root.length).split(sep)
-  for (let i = 0; i < path.length; i++) {
-    if (path[i][0] === '.') return true
-  }
-  return false
+  path = path.substr(root.length)
+
+  return new RegExp(`${sep}\\.`).test(path)
 }
 
 /**
