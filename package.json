@@ -21,7 +21,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "debug": "*",
+    "debug": "^3.2.5",
     "mz": "^2.0.0",
     "resolve-path": "^1.2.1"
   },
@@ -29,5 +29,8 @@
     "test": "mocha --require should --reporter spec",
     "test-cov": "node ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --require should",
     "test-travis": "node ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --require should"
+  },
+  "publishConfig": {
+    "tag": "latest-1"
   }
 }
