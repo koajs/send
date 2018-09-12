@@ -1,4 +1,11 @@
 
+1.3.2 / 2018-09-12
+==================
+
+**others**
+  * [[`47b26c9`](http://github.com/koajs/send/commit/47b26c908d56506e3b093ab64336a34fc60dd69c)] - deps: pin debug@2 (#110) (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`e86357b`](http://github.com/koajs/send/commit/e86357b061ac7ccb810a0b209cd035e6867f478a)] - 1.3.1 (Jonathan Ong <<jonathanrichardong@gmail.com>>),
+
 1.3.0 / 2014-09-07
 ==================
 
