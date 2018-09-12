@@ -2,7 +2,7 @@
   "name": "koa-send",
   "description": "Transfer static files",
   "repository": "koajs/send",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "keywords": [
     "koa",
     "file",
@@ -31,6 +31,6 @@
     "test-travis": "node ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --require should"
   },
   "publishConfig": {
-    "tag": "latest-1"
+    "tag": "latest-2"
   }
 }
