@@ -13,20 +13,23 @@
     "index.js"
   ],
   "devDependencies": {
-    "koa": "*",
+    "koa": "1",
     "should": "3",
     "mocha": "1",
-    "supertest": "0",
+    "supertest": "1",
     "istanbul-harmony": "0"
   },
   "license": "MIT",
   "dependencies": {
-    "debug": "*",
+    "debug": "^2.6.9",
     "mz": "^1.0.1"
   },
   "scripts": {
-    "test": "mocha --harmony-generators --require should --reporter spec",
-    "test-cov": "node --harmony-generators ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --require should",
-    "test-travis": "node --harmony-generators ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --require should"
+    "test": "mocha --harmony --require should --reporter spec",
+    "test-cov": "node --harmony ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --require should",
+    "test-travis": "node --harmony ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --require should"
+  },
+  "publishConfig": {
+    "tag": "latest-1"
   }
 }
