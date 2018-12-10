@@ -84,7 +84,7 @@ async function send (ctx, path, opts = {}) {
     encodingExt = '.gz'
   }
 
-  if (extensions && !/\.[^/]*$/.exec(path)) {
+  if (extensions && extname(path) === '') {
     const list = [].concat(extensions)
     for (let i = 0; i < list.length; i++) {
       let ext = list[i]
@@ -109,7 +109,7 @@ async function send (ctx, path, opts = {}) {
     // so that you can do both `/directory` and `/directory/`
     if (stats.isDirectory()) {
       if (format && index) {
-        path += '/' + index
+        path += sep + index
         stats = await fs.stat(path)
       } else {
         return
