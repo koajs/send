@@ -6,7 +6,7 @@ const debug = require('debug')('koa-send')
 const resolvePath = require('resolve-path')
 const createError = require('http-errors')
 const assert = require('assert')
-const fs = require('mz/fs')
+const fs = require('fs')
 
 const {
   normalize,
@@ -72,12 +72,12 @@ async function send (ctx, path, opts = {}) {
 
   let encodingExt = ''
   // serve brotli file when possible otherwise gzipped file when possible
-  if (ctx.acceptsEncodings('br', 'identity') === 'br' && brotli && (await fs.exists(path + '.br'))) {
+  if (ctx.acceptsEncodings('br', 'identity') === 'br' && brotli && (await fs.existsSync(path + '.br'))) {
     path = path + '.br'
     ctx.set('Content-Encoding', 'br')
     ctx.res.removeHeader('Content-Length')
     encodingExt = '.br'
-  } else if (ctx.acceptsEncodings('gzip', 'identity') === 'gzip' && gzip && (await fs.exists(path + '.gz'))) {
+  } else if (ctx.acceptsEncodings('gzip', 'identity') === 'gzip' && gzip && (await fs.existsSync(path + '.gz'))) {
     path = path + '.gz'
     ctx.set('Content-Encoding', 'gzip')
     ctx.res.removeHeader('Content-Length')
@@ -92,25 +92,23 @@ async function send (ctx, path, opts = {}) {
         throw new TypeError('option extensions must be array of strings or false')
       }
       if (!/^\./.exec(ext)) ext = '.' + ext
-      if (await fs.exists(path + ext)) {
+      if (await fs.existsSync(path + ext)) {
         path = path + ext
         break
       }
     }
   }
 
-  // stat
   let stats
   try {
-    stats = await fs.stat(path)
-
+    stats = await fs.statSync(path)
     // Format the path to serve static file servers
     // and not require a trailing slash for directories,
     // so that you can do both `/directory` and `/directory/`
     if (stats.isDirectory()) {
       if (format && index) {
         path += '/' + index
-        stats = await fs.stat(path)
+        stats = await fs.statSync(path)
       } else {
         return
       }
@@ -124,11 +122,9 @@ async function send (ctx, path, opts = {}) {
     throw err
   }
 
-  if (setHeaders) setHeaders(ctx.res, path, stats)
 
-  // stream
-  ctx.set('Content-Length', stats.size)
-  if (!ctx.response.get('Last-Modified')) ctx.set('Last-Modified', stats.mtime.toUTCString())
+
+
   if (!ctx.response.get('Cache-Control')) {
     const directives = ['max-age=' + (maxage / 1000 | 0)]
     if (immutable) {
