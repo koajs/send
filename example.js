@@ -11,7 +11,7 @@ app.use(async (ctx) => {
     ctx.body = 'Try GET /package.json'
     return
   }
-  await send(ctx, ctx.path, { root: __dirname })
+  await send(ctx, ctx.path, { root: __dirname, range: true })
 })
 
 app.listen(3000)
