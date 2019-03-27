@@ -28,6 +28,7 @@ $ npm install koa-send
  - `format` If not `false` (defaults to `true`), format the path to serve static file servers and not require a trailing slash for directories, so that you can do both `/directory` and `/directory/`.
  - [`setHeaders`](#setheaders) Function to set custom headers on response.
  - `extensions` Try to match extensions from passed array to search for file when no extension is sufficed in URL. First found is served. (defaults to `false`)
+ - `range` Allow range request of partial content. (defaults to `false`)
 
 ### Root path
 

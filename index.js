@@ -7,6 +7,7 @@ const resolvePath = require('resolve-path')
 const createError = require('http-errors')
 const assert = require('assert')
 const fs = require('mz/fs')
+const ByteRangeStream = require('byte-range-stream')
 
 const {
   normalize,
@@ -52,6 +53,7 @@ async function send (ctx, path, opts = {}) {
   const brotli = opts.brotli !== false
   const gzip = opts.gzip !== false
   const setHeaders = opts.setHeaders
+  const range = opts.range
 
   if (setHeaders && typeof setHeaders !== 'function') {
     throw new TypeError('option setHeaders must be function')
@@ -127,7 +129,7 @@ async function send (ctx, path, opts = {}) {
   if (setHeaders) setHeaders(ctx.res, path, stats)
 
   // stream
-  ctx.set('Content-Length', stats.size)
+  if (range && (!ctx.response.get('Accept-Ranges'))) ctx.set('Accept-Ranges', 'bytes')
   if (!ctx.response.get('Last-Modified')) ctx.set('Last-Modified', stats.mtime.toUTCString())
   if (!ctx.response.get('Cache-Control')) {
     const directives = ['max-age=' + (maxage / 1000 | 0)]
@@ -136,8 +138,24 @@ async function send (ctx, path, opts = {}) {
     }
     ctx.set('Cache-Control', directives.join(','))
   }
-  if (!ctx.type) ctx.type = type(path, encodingExt)
-  ctx.body = fs.createReadStream(path)
+  if (range && ctx.request.get('Range')) {
+    const stream = new ByteRangeStream({
+      range: ctx.request.get('Range'),
+      getChunk: range => fs.createReadStream(path, { start: range.start, end: range.end }),
+      totalSize: stats.size,
+      contentType: type(path, encodingExt)
+    })
+    const headers = stream.getHeaders()
+    for (const header in headers)
+      ctx.response.set(header, headers[header]);
+    if (!ctx.type) ctx.type = type(path, encodingExt)
+    ctx.state = 206
+    ctx.body = stream
+  } else {
+    ctx.set('Content-Length', stats.size)
+    if (!ctx.type) ctx.type = type(path, encodingExt)
+    ctx.body = fs.createReadStream(path)
+  }
 
   return path
 }
