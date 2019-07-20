@@ -84,7 +84,7 @@ async function send (ctx, path, opts = {}) {
     encodingExt = '.gz'
   }
 
-  if (extensions && !/\.[^/]*$/.exec(path)) {
+  if (extensions && !/\./.exec(basename(path))) {
     const list = [].concat(extensions)
     for (let i = 0; i < list.length; i++) {
       let ext = list[i]
