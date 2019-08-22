@@ -3,6 +3,7 @@ const request = require('supertest')
 const send = require('..')
 const path = require('path')
 const Koa = require('koa')
+const fs = require('fs')
 const assert = require('assert')
 const decompress = require('iltorb').decompress
 
@@ -54,6 +55,19 @@ describe('send(ctx, file)', function () {
         .get('/')
         .expect(200)
         .expect('world', done)
+      })
+
+      it('should 304', function (done) {
+        const app = new Koa()
+
+        app.use(async (ctx) => {
+          await send(ctx, 'test/fixtures/hello.txt')
+        })
+
+        request(app.listen())
+          .get('/')
+          .set('if-modified-since', fs.statSync(path.join(__dirname, 'fixtures/hello.txt')).mtime)
+          .expect(304, done)
       })
     })
 

@@ -126,8 +126,6 @@ async function send (ctx, path, opts = {}) {
 
   if (setHeaders) setHeaders(ctx.res, path, stats)
 
-  // stream
-  ctx.set('Content-Length', stats.size)
   if (!ctx.response.get('Last-Modified')) ctx.set('Last-Modified', stats.mtime.toUTCString())
   if (!ctx.response.get('Cache-Control')) {
     const directives = ['max-age=' + (maxage / 1000 | 0)]
@@ -136,6 +134,16 @@ async function send (ctx, path, opts = {}) {
     }
     ctx.set('Cache-Control', directives.join(','))
   }
+
+  ctx.status = 200
+  if (ctx.fresh) {
+    ctx.status = 304
+    ctx.set('Content-Length', 0)
+    return path
+  }
+
+  // stream
+  ctx.set('Content-Length', stats.size)
   if (!ctx.type) ctx.type = type(path, encodingExt)
   ctx.body = fs.createReadStream(path)
 
