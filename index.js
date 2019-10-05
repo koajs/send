@@ -48,6 +48,7 @@ async function send (ctx, path, opts = {}) {
   const immutable = opts.immutable || false
   const hidden = opts.hidden || false
   const format = opts.format !== false
+  const directorySlash = opts.directorySlash || false
   const extensions = Array.isArray(opts.extensions) ? opts.extensions : false
   const brotli = opts.brotli !== false
   const gzip = opts.gzip !== false
@@ -108,6 +109,10 @@ async function send (ctx, path, opts = {}) {
     // and not require a trailing slash for directories,
     // so that you can do both `/directory` and `/directory/`
     if (stats.isDirectory()) {
+      if (directorySlash && !trailingSlash) {
+        ctx.redirect(ctx.request.path + '/')
+        return
+      }
       if (format && index) {
         path += '/' + index
         stats = await fs.stat(path)
