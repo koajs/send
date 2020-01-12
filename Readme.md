@@ -56,7 +56,7 @@ app.use(async (ctx) => {
 ### setHeaders
 
 The function is called as `fn(res, path, stats)`, where the arguments are:
-* `res`: the response object
+* `res`: the Koa response object
 * `path`: the resolved file path that is being sent
 * `stats`: the stats object of the file that is being sent.
 
