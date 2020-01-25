@@ -12,6 +12,13 @@
   "files": [
     "index.js"
   ],
+  "nyc": {
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "report-dir": "./coverage"
+  },
   "devDependencies": {
     "eslint": "^4.19.1",
     "eslint-config-standard": "^11.0.0",
@@ -20,9 +27,9 @@
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
     "iltorb": "^2.3.2",
-    "istanbul": "^0.4.5",
     "koa": "^2.5.1",
     "mocha": "^5.2.0",
+    "nyc": "^15.0.0",
     "should": "^13.2.1",
     "supertest": "^3.1.0"
   },
@@ -36,8 +43,7 @@
   "scripts": {
     "lint": "eslint --fix .",
     "test": "mocha --require should --reporter spec --exit",
-    "test-cov": "istanbul cover ./node_modules/.bin/_mocha -- --require should --exit",
-    "test-travis": "istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --require should --exit"
+    "test-cov": "nyc npm run test"
   },
   "engines": {
     "node": ">= 7.6.0"
