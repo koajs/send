@@ -48,7 +48,7 @@
     "test-cov": "nyc npm run test"
   },
   "engines": {
-    "node": ">= 7.6.0"
+    "node": ">= 8"
   },
   "bugs": {
     "url": "https://github.com/koajs/send/issues"
