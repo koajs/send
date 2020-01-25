@@ -84,16 +84,16 @@ async function send (ctx, path, opts = {}) {
     encodingExt = '.gz'
   }
 
-  if (extensions && !/\.[^/]*$/.exec(path)) {
+  if (extensions && !/\./.exec(basename(path))) {
     const list = [].concat(extensions)
     for (let i = 0; i < list.length; i++) {
       let ext = list[i]
       if (typeof ext !== 'string') {
         throw new TypeError('option extensions must be array of strings or false')
       }
-      if (!/^\./.exec(ext)) ext = '.' + ext
-      if (await fs.exists(path + ext)) {
-        path = path + ext
+      if (!/^\./.exec(ext)) ext = `.${ext}`
+      if (await fs.exists(`${path}${ext}`)) {
+        path = `${path}${ext}`
         break
       }
     }
@@ -109,7 +109,7 @@ async function send (ctx, path, opts = {}) {
     // so that you can do both `/directory` and `/directory/`
     if (stats.isDirectory()) {
       if (format && index) {
-        path += '/' + index
+        path += `/${index}`
         stats = await fs.stat(path)
       } else {
         return
@@ -130,7 +130,7 @@ async function send (ctx, path, opts = {}) {
   ctx.set('Content-Length', stats.size)
   if (!ctx.response.get('Last-Modified')) ctx.set('Last-Modified', stats.mtime.toUTCString())
   if (!ctx.response.get('Cache-Control')) {
-    const directives = ['max-age=' + (maxage / 1000 | 0)]
+    const directives = [`max-age=${(maxage / 1000 | 0)}`]
     if (immutable) {
       directives.push('immutable')
     }
