@@ -1,4 +1,4 @@
-# [**koa-send**](https://github.com/koa/multer)
+# [**koa-send**](https://github.com/koajs/send)
 
 >  Static file serving middleware.
 
