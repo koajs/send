@@ -47,7 +47,7 @@ async function send (ctx, path, opts = {}) {
   const maxage = opts.maxage || opts.maxAge || 0
   const immutable = opts.immutable || false
   const hidden = opts.hidden || false
-  const format = opts.format !== false
+  const format = (opts.format === false) ? false : (opts.format === 'redirect' ? 'redirect' : 'follow')
   const extensions = Array.isArray(opts.extensions) ? opts.extensions : false
   const brotli = opts.brotli !== false
   const gzip = opts.gzip !== false
@@ -107,10 +107,15 @@ async function send (ctx, path, opts = {}) {
     // Format the path to serve static file servers
     // and not require a trailing slash for directories,
     // so that you can do both `/directory` and `/directory/`
+    // for 'follow', transparently send the file
+    // for 'redirect', give HTTP 302 redirection
     if (stats.isDirectory()) {
-      if (format && index) {
+      if (format === 'follow' && index) {
         path += `/${index}`
         stats = await fs.stat(path)
+      } else if (format === 'redirect' && index) {
+        ctx.redirect(ctx.request.origin + ctx.request.path + '/' + ctx.request.search)
+        return
       } else {
         return
       }
