@@ -114,7 +114,7 @@ async function send (ctx, path, opts = {}) {
         path += `/${index}`
         stats = await fs.stat(path)
       } else if (format === 'redirect' && index) {
-        ctx.redirect(ctx.request.origin + ctx.request.path + '/' + ctx.request.search)
+        ctx.redirect(ctx.request.path + '/' + ctx.request.search)
         return true
       } else {
         return
