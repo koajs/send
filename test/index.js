@@ -17,8 +17,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(404, done)
+          .get('/')
+          .expect(404, done)
       })
 
       it('should throw 404 error', function (done) {
@@ -34,11 +34,11 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(404, () => {
-          assert.equal(error.status, 404)
-          done()
-        })
+          .get('/')
+          .expect(404, () => {
+            assert.equal(error.status, 404)
+            done()
+          })
       })
     })
 
@@ -51,9 +51,9 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(200)
-        .expect('world', done)
+          .get('/')
+          .expect(200)
+          .expect('world', done)
       })
     })
 
@@ -66,8 +66,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(403, done)
+          .get('/')
+          .expect(403, done)
       })
     })
   })
@@ -83,8 +83,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(404, done)
+          .get('/')
+          .expect(404, done)
       })
     })
 
@@ -98,9 +98,9 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(200)
-        .expect('world', done)
+          .get('/')
+          .expect(200)
+          .expect('world', done)
       })
     })
 
@@ -114,8 +114,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(404, done)
+          .get('/')
+          .expect(404, done)
       })
     })
 
@@ -129,8 +129,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(403, done)
+          .get('/')
+          .expect(403, done)
       })
     })
 
@@ -144,8 +144,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(403, done)
+          .get('/')
+          .expect(403, done)
       })
     })
   })
@@ -161,9 +161,9 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(200)
-        .expect('html index', done)
+          .get('/')
+          .expect(200)
+          .expect('html index', done)
       })
 
       it('should serve it', function (done) {
@@ -175,9 +175,9 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(200)
-        .expect('html index', done)
+          .get('/')
+          .expect(200)
+          .expect('html index', done)
       })
     })
   })
@@ -191,8 +191,8 @@ describe('send(ctx, file)', function () {
       })
 
       request(app.listen())
-      .get('/')
-      .expect(404, done)
+        .get('/')
+        .expect(404, done)
     })
 
     it('should return undefined if format is set to false', function (done) {
@@ -204,8 +204,8 @@ describe('send(ctx, file)', function () {
       })
 
       request(app.listen())
-      .get('/')
-      .expect(404, done)
+        .get('/')
+        .expect(404, done)
     })
   })
 
@@ -218,8 +218,8 @@ describe('send(ctx, file)', function () {
       })
 
       request(app.listen())
-      .get('/')
-      .expect(404, done)
+        .get('/')
+        .expect(404, done)
     })
   })
 
@@ -290,8 +290,8 @@ describe('send(ctx, file)', function () {
       })
 
       request(app.listen())
-      .get('/')
-      .expect(400, done)
+        .get('/')
+        .expect(400, done)
     })
   })
 
@@ -306,8 +306,8 @@ describe('send(ctx, file)', function () {
       })
 
       request(app.listen())
-      .get('/')
-      .expect(200, done)
+        .get('/')
+        .expect(200, done)
     })
 
     describe('or .gz version when requested and if possible', function () {
@@ -319,11 +319,11 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .set('Accept-Encoding', 'deflate, identity')
-        .expect('Content-Length', '18')
-        .expect('{ "name": "tobi" }')
-        .expect(200, done)
+          .get('/')
+          .set('Accept-Encoding', 'deflate, identity')
+          .expect('Content-Length', '18')
+          .expect('{ "name": "tobi" }')
+          .expect(200, done)
       })
 
       it('should return .gz path (gzip option defaults to true)', function (done) {
@@ -334,11 +334,11 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .set('Accept-Encoding', 'gzip, deflate, identity')
-        .expect('Content-Length', '48')
-        .expect('{ "name": "tobi" }')
-        .expect(200, done)
+          .get('/')
+          .set('Accept-Encoding', 'gzip, deflate, identity')
+          .expect('Content-Length', '48')
+          .expect('{ "name": "tobi" }')
+          .expect(200, done)
       })
 
       it('should return .gz path when gzip option is turned on', function (done) {
@@ -349,11 +349,11 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .set('Accept-Encoding', 'gzip, deflate, identity')
-        .expect('Content-Length', '48')
-        .expect('{ "name": "tobi" }')
-        .expect(200, done)
+          .get('/')
+          .set('Accept-Encoding', 'gzip, deflate, identity')
+          .expect('Content-Length', '48')
+          .expect('{ "name": "tobi" }')
+          .expect(200, done)
       })
 
       it('should not return .gz path when gzip option is false', function (done) {
@@ -364,11 +364,11 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .set('Accept-Encoding', 'gzip, deflate, identity')
-        .expect('Content-Length', '18')
-        .expect('{ "name": "tobi" }')
-        .expect(200, done)
+          .get('/')
+          .set('Accept-Encoding', 'gzip, deflate, identity')
+          .expect('Content-Length', '18')
+          .expect('{ "name": "tobi" }')
+          .expect(200, done)
       })
     })
 
@@ -393,11 +393,11 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .set('Accept-Encoding', 'deflate, identity')
-        .expect('Content-Length', '18')
-        .expect('{ "name": "tobi" }')
-        .expect(200, done)
+          .get('/')
+          .set('Accept-Encoding', 'deflate, identity')
+          .expect('Content-Length', '18')
+          .expect('{ "name": "tobi" }')
+          .expect(200, done)
       })
 
       it('should return .br path (brotli option defaults to true)', function (done) {
@@ -408,15 +408,15 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .parse(parser)
-        .set('Accept-Encoding', 'br, deflate, identity')
-        .expect('Content-Length', '22')
-        .expect(200)
-        .then(({body}) => {
-          assert.deepStrictEqual(body, '{ "name": "tobi" }')
-          done()
-        })
+          .get('/')
+          .parse(parser)
+          .set('Accept-Encoding', 'br, deflate, identity')
+          .expect('Content-Length', '22')
+          .expect(200)
+          .then(({body}) => {
+            assert.deepStrictEqual(body, '{ "name": "tobi" }')
+            done()
+          })
       })
 
       it('should return .br path when brotli option is turned on', function (done) {
@@ -427,15 +427,15 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .parse(parser)
-        .set('Accept-Encoding', 'br, deflate, identity')
-        .expect('Content-Length', '22')
-        .expect(200)
-        .then(({body}) => {
-          assert.deepStrictEqual(body, '{ "name": "tobi" }')
-          done()
-        })
+          .get('/')
+          .parse(parser)
+          .set('Accept-Encoding', 'br, deflate, identity')
+          .expect('Content-Length', '22')
+          .expect(200)
+          .then(({body}) => {
+            assert.deepStrictEqual(body, '{ "name": "tobi" }')
+            done()
+          })
       })
 
       it('should not return .br path when brotli option is false', function (done) {
@@ -446,11 +446,11 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .set('Accept-Encoding', 'br, deflate, identity')
-        .expect('Content-Length', '18')
-        .expect('{ "name": "tobi" }')
-        .expect(200, done)
+          .get('/')
+          .set('Accept-Encoding', 'br, deflate, identity')
+          .expect('Content-Length', '18')
+          .expect('{ "name": "tobi" }')
+          .expect(200, done)
       })
 
       it('should return .gz path when brotli option is turned off', function (done) {
@@ -461,11 +461,11 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .set('Accept-Encoding', 'br, gzip, deflate, identity')
-        .expect('Content-Length', '48')
-        .expect('{ "name": "tobi" }')
-        .expect(200, done)
+          .get('/')
+          .set('Accept-Encoding', 'br, gzip, deflate, identity')
+          .expect('Content-Length', '48')
+          .expect('{ "name": "tobi" }')
+          .expect(200, done)
       })
     })
 
@@ -480,9 +480,9 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect('Cache-Control', 'max-age=5')
-        .expect(200, done)
+          .get('/')
+          .expect('Cache-Control', 'max-age=5')
+          .expect(200, done)
       })
 
       it('should truncate fractional values for max-age', function (done) {
@@ -495,9 +495,9 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect('Cache-Control', 'max-age=1')
-        .expect(200, done)
+          .get('/')
+          .expect('Cache-Control', 'max-age=1')
+          .expect(200, done)
       })
     })
 
@@ -512,9 +512,9 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect('Cache-Control', 'max-age=31536000,immutable')
-        .expect(200, done)
+          .get('/')
+          .expect('Cache-Control', 'max-age=31536000,immutable')
+          .expect(200, done)
       })
     })
   })
@@ -529,11 +529,11 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect((res) => {
-          assert.equal(res.header['cache-control'], undefined)
-        })
-        .expect(404, done)
+          .get('/')
+          .expect((res) => {
+            assert.equal(res.header['cache-control'], undefined)
+          })
+          .expect(404, done)
       })
     })
   })
@@ -548,8 +548,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(404, done)
+          .get('/')
+          .expect(404, done)
       })
     })
 
@@ -562,8 +562,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(404, done)
+          .get('/')
+          .expect(404, done)
       })
     })
 
@@ -576,8 +576,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(200, done)
+          .get('/')
+          .expect(200, done)
       })
     })
   })
@@ -592,8 +592,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(404, done)
+          .get('/')
+          .expect(404, done)
       })
     })
 
@@ -606,8 +606,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(404, done)
+          .get('/')
+          .expect(404, done)
       })
     })
 
@@ -620,8 +620,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(404, done)
+          .get('/')
+          .expect(404, done)
       })
     })
 
@@ -634,9 +634,9 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(500)
-        .end(done)
+          .get('/')
+          .expect(500)
+          .end(done)
       })
     })
 
@@ -649,10 +649,10 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
-        .end(done)
+          .get('/')
+          .expect(200)
+          .expect('Content-Type', /application\/json/)
+          .end(done)
       })
     })
 
@@ -665,8 +665,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(200, done)
+          .get('/')
+          .expect(200, done)
       })
     })
 
@@ -679,8 +679,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(200, done)
+          .get('/')
+          .expect(200, done)
       })
     })
 
@@ -693,8 +693,8 @@ describe('send(ctx, file)', function () {
         })
 
         request(app.listen())
-        .get('/')
-        .expect(200, done)
+          .get('/')
+          .expect(200, done)
       })
     })
   })
@@ -707,9 +707,9 @@ describe('send(ctx, file)', function () {
     })
 
     request(app.listen())
-    .get('/')
-    .expect('Content-Type', /application\/json/)
-    .end(done)
+      .get('/')
+      .expect('Content-Type', /application\/json/)
+      .end(done)
   })
 
   it('should set the Content-Length', function (done) {
@@ -720,9 +720,9 @@ describe('send(ctx, file)', function () {
     })
 
     request(app.listen())
-    .get('/')
-    .expect('Content-Length', '18')
-    .end(done)
+      .get('/')
+      .expect('Content-Length', '18')
+      .end(done)
   })
 
   it('should set the Content-Type', function (done) {
@@ -736,9 +736,9 @@ describe('send(ctx, file)', function () {
     })
 
     request(app.listen())
-    .get('/')
-    .expect('Content-Type', /text\/plain/)
-    .end(done)
+      .get('/')
+      .expect('Content-Type', /text\/plain/)
+      .end(done)
   })
 
   it('should set Last-Modified', function (done) {
@@ -749,9 +749,9 @@ describe('send(ctx, file)', function () {
     })
 
     request(app.listen())
-    .get('/')
-    .expect('Last-Modified', /GMT/)
-    .end(done)
+      .get('/')
+      .expect('Last-Modified', /GMT/)
+      .end(done)
   })
 
   describe('with setHeaders', function () {
@@ -765,9 +765,9 @@ describe('send(ctx, file)', function () {
       })
 
       request(app.listen())
-      .get('/')
-      .expect(500)
-      .end(done)
+        .get('/')
+        .expect(500)
+        .end(done)
     })
 
     it('should not edit already set headers', function (done) {
@@ -793,12 +793,12 @@ describe('send(ctx, file)', function () {
       })
 
       request(app.listen())
-      .get('/')
-      .expect(200)
-      .expect('Cache-Control', 'max-age=0,must-revalidate')
-      .expect('Last-Modified', 'foo')
-      .expect('Content-Length', '18')
-      .end(done)
+        .get('/')
+        .expect(200)
+        .expect('Cache-Control', 'max-age=0,must-revalidate')
+        .expect('Last-Modified', 'foo')
+        .expect('Content-Length', '18')
+        .end(done)
     })
 
     it('should correctly pass through regarding usual headers', function (done) {
@@ -811,12 +811,12 @@ describe('send(ctx, file)', function () {
       })
 
       request(app.listen())
-      .get('/')
-      .expect(200)
-      .expect('Cache-Control', 'max-age=0')
-      .expect('Content-Length', '18')
-      .expect('Last-Modified', /GMT/)
-      .end(done)
+        .get('/')
+        .expect(200)
+        .expect('Cache-Control', 'max-age=0')
+        .expect('Content-Length', '18')
+        .expect('Last-Modified', /GMT/)
+        .end(done)
     })
   })
 
@@ -831,11 +831,11 @@ describe('send(ctx, file)', function () {
     })
 
     request(app.listen())
-    .get('/')
-    .expect(500, function (err) {
-      assert.ok(err)
-      assert.ok(stream.destroyed)
-      done()
-    })
+      .get('/')
+      .expect(500, function (err) {
+        assert.ok(err)
+        assert.ok(stream.destroyed)
+        done()
+      })
   })
 })

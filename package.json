@@ -1,14 +1,18 @@
 {
   "name": "koa-send",
   "description": "Transfer static files",
-  "repository": "koajs/send",
   "version": "5.0.0",
+  "main": "index.js",
   "keywords": [
     "koa",
     "file",
     "static",
     "sendfile"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/koajs/send.git"
+  },
   "files": [
     "index.js"
   ],
@@ -35,17 +39,21 @@
   },
   "license": "MIT",
   "dependencies": {
-    "debug": "^3.1.0",
-    "http-errors": "^1.6.3",
+    "debug": "^4.1.1",
+    "http-errors": "^1.7.3",
     "mz": "^2.7.0",
     "resolve-path": "^1.4.0"
   },
   "scripts": {
     "lint": "eslint --fix .",
-    "test": "mocha --require should --reporter spec --exit",
+    "test": "npm run lint && mocha --require should --reporter spec --exit",
     "test-cov": "nyc npm run test"
   },
   "engines": {
-    "node": ">= 7.6.0"
-  }
+    "node": ">= 8"
+  },
+  "bugs": {
+    "url": "https://github.com/koajs/send/issues"
+  },
+  "homepage": "https://github.com/koajs/send"
 }
