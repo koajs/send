@@ -13,6 +13,9 @@
     "type": "git",
     "url": "git://github.com/koajs/send.git"
   },
+  "files": [
+    "index.js"
+  ],
   "nyc": {
     "reporter": [
       "lcov",
@@ -28,7 +31,6 @@
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
     "iltorb": "^2.3.2",
-    "istanbul": "^0.4.5",
     "koa": "^2.5.1",
     "mocha": "^5.2.0",
     "nyc": "^15.0.0",

@@ -1,5 +1,6 @@
+# [**koa-send**](https://github.com/koajs/send)
 
-# koa-send
+>  Static file serving middleware.
 
 [![NPM version][npm-image]][npm-url]
 [![Build status][travis-image]][travis-url]
@@ -8,7 +9,6 @@
 [![License][license-image]][license-url]
 [![Downloads][downloads-image]][downloads-url]
 
- Static file serving middleware.
 
 ## Installation
 
@@ -16,13 +16,14 @@
 $ npm install koa-send
 ```
 
+
 ## Options
 
- - `maxage` Browser cache max-age in milliseconds. (defaults to `0`)
- - `immutable` Tell the browser the resource is immutable and can be cached indefinitely. (defaults to `false`)
- - `hidden` Allow transfer of hidden files. (defaults to `false`)
+ - `maxage` Browser cache max-age in milliseconds. (defaults to `0`).
+ - `immutable` Tell the browser the resource is immutable and can be cached indefinitely. (defaults to `false`).
+ - `hidden` Allow transfer of hidden files. (defaults to `false`).
  - [`root`](#root-path) Root directory to restrict file access.
- - `index` Name of the index file to serve automatically when visiting the root location. (defaults to none)
+ - `index` Name of the index file to serve automatically when visiting the root location. (defaults to none).
  - `gzip` Try to serve the gzipped version of a file automatically when `gzip` is supported by a client and if the requested file with `.gz` extension exists. (defaults to `true`).
  - `brotli` Try to serve the brotli version of a file automatically when `brotli` is supported by a client and if the requested file with `.br` extension exists. (defaults to `true`).
  - `format` If not `false` (defaults to `true`), format the path to serve static file servers and not require a trailing slash for directories, so that you can do both `/directory` and `/directory/`.
@@ -56,13 +57,14 @@ app.use(async (ctx) => {
 ### setHeaders
 
 The function is called as `fn(res, path, stats)`, where the arguments are:
-* `res`: the response object
-* `path`: the resolved file path that is being sent
+* `res`: the response object.
+* `path`: the resolved file path that is being sent.
 * `stats`: the stats object of the file that is being sent.
 
 You should only use the `setHeaders` option when you wish to edit the `Cache-Control` or `Last-Modified` headers, because doing it before is useless (it's overwritten by `send`), and doing it after is too late because the headers are already sent.
 
 If you want to edit any other header, simply set them before calling `send`.
+
 
 ## Example
 
@@ -83,9 +85,11 @@ app.listen(3000);
 console.log('listening on port 3000');
 ```
 
+
 ## License
 
-  MIT
+[MIT](/LICENSE)
+
 
 [npm-image]: https://img.shields.io/npm/v/koa-send.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/koa-send
