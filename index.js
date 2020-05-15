@@ -16,7 +16,6 @@ const {
   parse,
   sep
 } = require('path')
-const hiddenFileReg = new RegExp(`${sep}\\.`)
 
 /**
  * Expose `send()`.
@@ -148,6 +147,7 @@ async function send (ctx, path, opts = {}) {
  */
 
 function isHidden (root, path) {
+  const hiddenFileReg = new RegExp(`${sep}\\.`)
   path = path.substr(root.length)
 
   return hiddenFileReg.test(path)
