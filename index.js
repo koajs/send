@@ -30,7 +30,7 @@ module.exports = send
  * @param {Context} ctx
  * @param {String} path
  * @param {Object} [opts]
- * @return {Function}
+ * @return {Promise}
  * @api public
  */
 
