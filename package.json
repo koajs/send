@@ -41,7 +41,6 @@
   "dependencies": {
     "debug": "^4.1.1",
     "http-errors": "^1.7.3",
-    "mz": "^2.7.0",
     "resolve-path": "^1.4.0"
   },
   "scripts": {
