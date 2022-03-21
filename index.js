@@ -55,7 +55,7 @@ async function send (ctx, path, opts = {}) {
   debug('send "%s" %j', path, opts)
   const root = opts.root ? normalize(resolve(opts.root)) : ''
   const trailingSlash = path[path.length - 1] === '/'
-  path = path.substr(parse(path).root.length)
+  path = path.slice(parse(path).root.length)
   const index = opts.index
   const maxage = opts.maxage || opts.maxAge || 0
   const immutable = opts.immutable || false
@@ -160,7 +160,7 @@ async function send (ctx, path, opts = {}) {
  */
 
 function isHidden (root, path) {
-  path = path.substr(root.length).split(sep)
+  path = path.slice(root.length).split(sep)
   for (let i = 0; i < path.length; i++) {
     if (path[i][0] === '.') return true
   }

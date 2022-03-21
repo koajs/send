@@ -779,7 +779,7 @@ describe('send(ctx, file)', function () {
       app.use(async (ctx) => {
         await send(ctx, testFilePath, {
           setHeaders: function (res, path, stats) {
-            assert.equal(path.substr(-normalizedTestFilePath.length), normalizedTestFilePath)
+            assert.equal(path.slice(-normalizedTestFilePath.length), normalizedTestFilePath)
             assert.equal(stats.size, 18)
             assert(res)
 
