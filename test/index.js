@@ -293,6 +293,19 @@ describe('send(ctx, file)', function () {
         .get('/')
         .expect(400, done)
     })
+
+    it('should display which path causes decode error', function (done) {
+      const app = new Koa()
+      const path = '%public_folder%/favicon.ico'
+
+      app.use(async (ctx) => {
+        await send(ctx, '/' + path)
+      })
+
+      request(app.listen())
+        .get('/')
+        .expect('failed to decode ' + path, done)
+    })
   })
 
   describe('when path is a file', function () {
