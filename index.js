@@ -71,33 +71,33 @@ async function send (ctx, path, opts = {}) {
   }
 
   // normalize path
-  path = decode(path)
+  let decodedPath = decode(path)
 
-  if (path === -1) return ctx.throw(400, 'failed to decode')
+  if (decodedPath === -1) return ctx.throw(400, 'failed to decode ' + path)
 
   // index file support
-  if (index && trailingSlash) path += index
+  if (index && trailingSlash) decodedPath += index
 
-  path = resolvePath(root, path)
+  decodedPath = resolvePath(root, decodedPath)
 
   // hidden file support, ignore
-  if (!hidden && isHidden(root, path)) return
+  if (!hidden && isHidden(root, decodedPath)) return
 
   let encodingExt = ''
   // serve brotli file when possible otherwise gzipped file when possible
-  if (ctx.acceptsEncodings('br', 'identity') === 'br' && brotli && (await exists(path + '.br'))) {
-    path = path + '.br'
+  if (ctx.acceptsEncodings('br', 'identity') === 'br' && brotli && (await exists(decodedPath + '.br'))) {
+    decodedPath = decodedPath + '.br'
     ctx.set('Content-Encoding', 'br')
     ctx.res.removeHeader('Content-Length')
     encodingExt = '.br'
-  } else if (ctx.acceptsEncodings('gzip', 'identity') === 'gzip' && gzip && (await exists(path + '.gz'))) {
-    path = path + '.gz'
+  } else if (ctx.acceptsEncodings('gzip', 'identity') === 'gzip' && gzip && (await exists(decodedPath + '.gz'))) {
+    decodedPath = decodedPath + '.gz'
     ctx.set('Content-Encoding', 'gzip')
     ctx.res.removeHeader('Content-Length')
     encodingExt = '.gz'
   }
 
-  if (extensions && !/\./.exec(basename(path))) {
+  if (extensions && !/\./.exec(basename(decodedPath))) {
     const list = [].concat(extensions)
     for (let i = 0; i < list.length; i++) {
       let ext = list[i]
@@ -105,8 +105,8 @@ async function send (ctx, path, opts = {}) {
         throw new TypeError('option extensions must be array of strings or false')
       }
       if (!/^\./.exec(ext)) ext = `.${ext}`
-      if (await exists(`${path}${ext}`)) {
-        path = `${path}${ext}`
+      if (await exists(`${decodedPath}${ext}`)) {
+        decodedPath = `${decodedPath}${ext}`
         break
       }
     }
@@ -115,15 +115,15 @@ async function send (ctx, path, opts = {}) {
   // stat
   let stats
   try {
-    stats = await stat(path)
+    stats = await stat(decodedPath)
 
     // Format the path to serve static file servers
     // and not require a trailing slash for directories,
     // so that you can do both `/directory` and `/directory/`
     if (stats.isDirectory()) {
       if (format && index) {
-        path += `/${index}`
-        stats = await stat(path)
+        decodedPath += `/${index}`
+        stats = await stat(decodedPath)
       } else {
         return
       }
@@ -137,7 +137,7 @@ async function send (ctx, path, opts = {}) {
     throw err
   }
 
-  if (setHeaders) setHeaders(ctx.res, path, stats)
+  if (setHeaders) setHeaders(ctx.res, decodedPath, stats)
 
   // stream
   ctx.set('Content-Length', stats.size)
@@ -149,10 +149,10 @@ async function send (ctx, path, opts = {}) {
     }
     ctx.set('Cache-Control', directives.join(','))
   }
-  if (!ctx.type) ctx.type = type(path, encodingExt)
-  ctx.body = fs.createReadStream(path)
+  if (!ctx.type) ctx.type = type(decodedPath, encodingExt)
+  ctx.body = fs.createReadStream(decodedPath)
 
-  return path
+  return decodedPath
 }
 
 /**
