@@ -1,0 +1,24 @@
+{
+  "prettier": true,
+  "space": true,
+  "extends": ["xo-lass"],
+  "rules": {
+    "no-await-in-loop": "off",
+    "node/no-deprecated-api": "off",
+    "no-unused-vars": "off",
+    "no-prototype-builtins": "off",
+    "prefer-rest-params": "off",
+    "n/prefer-global/process": "off",
+    "unicorn/prefer-math-trunc": "off",
+    "no-bitwise": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "@typescript-eslint/no-throw-literal": "off",
+    "unicorn/no-array-reduce": "off"
+  },
+  "ignores": ["test/**", "examples/**"]
+}
