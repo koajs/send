@@ -1,18 +1,31 @@
-# [**koa-send**](https://github.com/koajs/send)
+# [**@koa/send**](https://github.com/koajs/send)
 
-> Static file serving middleware.
 
 [![NPM version][npm-image]][npm-url]
-[![Build status][travis-image]][travis-url]
+![Build Status][github-action-image]
 [![Test coverage][coveralls-image]][coveralls-url]
-[![Dependency Status][david-image]][david-url]
 [![License][license-image]][license-url]
+[![Node Version][node-image]][node-url]
 [![Downloads][downloads-image]][downloads-url]
 
-## Installation
+[npm-image]: https://img.shields.io/npm/v/@koa/send.svg?style=flat-square
+[npm-url]: https://npmjs.org/package/@koa/send
+[github-action-image]: https://github.com/koajs/send/actions/workflows/ci.yml/badge.svg?style=flat-square
+[coveralls-image]: https://img.shields.io/coveralls/koajs/send.svg?style=flat-square
+[coveralls-url]: https://coveralls.io/r/koajs/send?branch=master
+[license-image]: http://img.shields.io/npm/l/koa-send.svg?style=flat-square
+[license-url]: LICENSE
+[downloads-image]: http://img.shields.io/npm/dm/koa-send.svg?style=flat-square
+[downloads-url]: https://npmjs.org/package/koa-send
+
+Koa static file serving middleware.
+
+## Install
+
+[![NPM](https://nodei.co/npm/@koa/send.png?downloads=true)](https://nodei.co/npm/@koa/send)
 
 ```js
-$ npm install koa-send
+$ npm i @koa/send
 ```
 
 ## Options
@@ -86,20 +99,3 @@ console.log("listening on port 3000");
 ## License
 
 [MIT](/LICENSE)
-
-[npm-image]: https://img.shields.io/npm/v/koa-send.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/koa-send
-[github-tag]: http://img.shields.io/github/tag/koajs/send.svg?style=flat-square
-[github-url]: https://github.com/koajs/send/tags
-[travis-image]: https://img.shields.io/travis/koajs/send.svg?style=flat-square
-[travis-url]: https://travis-ci.org/koajs/send
-[coveralls-image]: https://img.shields.io/coveralls/koajs/send.svg?style=flat-square
-[coveralls-url]: https://coveralls.io/r/koajs/send?branch=master
-[david-image]: http://img.shields.io/david/koajs/send.svg?style=flat-square
-[david-url]: https://david-dm.org/koajs/send
-[license-image]: http://img.shields.io/npm/l/koa-send.svg?style=flat-square
-[license-url]: LICENSE
-[downloads-image]: http://img.shields.io/npm/dm/koa-send.svg?style=flat-square
-[downloads-url]: https://npmjs.org/package/koa-send
-[gittip-image]: https://img.shields.io/gittip/jonathanong.svg?style=flat-square
-[gittip-url]: https://www.gittip.com/jonathanong/
