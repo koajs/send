@@ -4,8 +4,8 @@
  * Replace mz with custom promisified wrappers (#140)
  * fix(jsdoc): send return type (#141)
  * fix extensions options on windows machines (#79) (#122)
- * Revert "Using RegExp replace loop in isHidden (#109)" (#138)
- * Using RegExp replace loop in isHidden (#109)
+ * Revert "Using RegExp replace loop in isPathHidden (#109)" (#138)
+ * Using RegExp replace loop in isPathHidden (#109)
  * Clean up / Pipeline update ... (#135)
  * Update .travis.yml
  * Fix Tests & coverage (#132)

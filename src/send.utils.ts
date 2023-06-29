@@ -1,50 +1,41 @@
 /**
  * Module dependencies.
  */
-import asyncFs from 'node:fs/promises'
-import pathModule from 'node:path'
+import asyncFs from 'node:fs/promises';
+import path from 'node:path';
 
 /**
  * Returns `true` if the path exists, `false` otherwise.
- * 
- * @param path 
+ *
+ * @param path
  * @return {boolean}
  * @api private
  */
-export async function asyncFsExists(path: string) {
+export async function isPathExists(targetPath: string) {
   try {
-    await asyncFs.access(path)
-    return true
+    await asyncFs.access(targetPath);
+    return true;
   } catch (e) {
-    return false
+    return false;
   }
 }
 
 /**
  * Check if it's hidden.
  */
-export function isHidden(root: string, _path: any) {
-  _path = _path.substr(root.length).split(pathModule.sep)
-  for (let i = 0; i < _path.length; i++) {
-    if (_path[i][0] === '.') return true
+export function isPathHidden(root: string, targetPath: any) {
+  const pathParts = targetPath.slice(root.length).split(path.sep);
+  for (const part of pathParts) {
+    if (part.at(0) === '.') return true;
   }
-  return false
+
+  return false;
 }
 
 /**
  * File type.
  */
-export function type (file: string, ext: string) {
-  return ext !== '' ? pathModule.extname(pathModule.basename(file, ext)) : pathModule.extname(file)
-}
-
-/**
- * Decode `path`.
- */
-export function decode(targetPath: string) {
-  try {
-    return decodeURIComponent(targetPath)
-  } catch (err) {
-    return -1
-  }
+export function getFileType(file: string, ext: string) {
+  if (ext !== '') return path.extname(path.basename(file, ext));
+  return path.extname(file);
 }

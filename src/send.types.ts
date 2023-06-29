@@ -1,8 +1,12 @@
-import type { Stats } from "node:fs";
+import type { Stats } from 'node:fs';
 
-import type { ParameterizedContext } from "koa";
+import type { ParameterizedContext } from 'koa';
 
-type SetHeaders = (res: ParameterizedContext["res"], path: string, stats: Stats) => any;
+type SetHeaders = (
+  res: ParameterizedContext['res'],
+  path: string,
+  stats: Stats
+) => void;
 
 export type SendOptions = {
   /**
@@ -23,29 +27,29 @@ export type SendOptions = {
    */
   immutable?: boolean;
   /**
-  * Allow transfer of hidden files. (defaults to false)
-  */
+   * Allow transfer of hidden files. (defaults to false)
+   */
   hidden?: boolean;
   /**
-  * Try to serve the gzipped version of a file automatically when gzip is supported by a client and if the requested file with .gz extension exists. (defaults to true). 
-  */
+   * Try to serve the gzipped version of a file automatically when gzip is supported by a client and if the requested file with .gz extension exists. (defaults to true).
+   */
   gzip?: boolean;
   /**
-   * Try to serve the brotli version of a file automatically when brotli is supported by a client and if the requested file with .br extension exists. (defaults to true). 
+   * Try to serve the brotli version of a file automatically when brotli is supported by a client and if the requested file with .br extension exists. (defaults to true).
    */
   brotli?: boolean;
   /**
-   * If not false (defaults to true), format the path to serve static file servers and not require a trailing slash for directories, so that you can do both /directory and /directory/. 
+   * If not false (defaults to true), format the path to serve static file servers and not require a trailing slash for directories, so that you can do both /directory and /directory/.
    */
   format?: boolean;
   /**
-   * Function to set custom headers on response. 
+   * Function to set custom headers on response.
    */
   setHeaders?: SetHeaders;
   /**
-   * Try to match extensions from passed array to search for file when no extension is sufficed in URL. First found is served. (defaults to false) 
+   * Try to match extensions from passed array to search for file when no extension is sufficed in URL. First found is served. (defaults to false)
    */
   extensions?: string[] | false;
-}
+};
 
 export { ParameterizedContext };

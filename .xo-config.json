@@ -1,9 +1,7 @@
 {
   "prettier": true,
   "space": true,
-  "extends": [
-    "xo-lass"
-  ],
+  "extends": ["xo-lass"],
   "rules": {
     "node/no-deprecated-api": "off",
     "no-unused-vars": "off",
@@ -15,8 +13,5 @@
     "@typescript-eslint/prefer-nullish-coalescing": "off",
     "unicorn/no-array-reduce": "off"
   },
-  "ignores": [
-    "test/**",
-    "examples/**"
-  ]
+  "ignores": ["test/**", "examples/**"]
 }
