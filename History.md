@@ -1,3 +1,16 @@
+5.0.1 / 2020-07-08
+==================
+
+ * Replace mz with custom promisified wrappers (#140)
+ * fix(jsdoc): send return type (#141)
+ * fix extensions options on windows machines (#79) (#122)
+ * Revert "Using RegExp replace loop in isHidden (#109)" (#138)
+ * Using RegExp replace loop in isHidden (#109)
+ * Clean up / Pipeline update ... (#135)
+ * Update .travis.yml
+ * Fix Tests & coverage (#132)
+ * Fix license (#134)
+ * travis: add node@11
 
 5.0.0 / 2018-06-19
 ==================
