@@ -15,7 +15,7 @@ export async function isPathExists(targetPath: string) {
   try {
     await asyncFs.access(targetPath);
     return true;
-  } catch (e) {
+  } catch {
     return false;
   }
 }

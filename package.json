@@ -56,7 +56,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "lint": "xo src/*.ts test/*.ts",
+    "lint": "xo",
     "lint:fix": "xo --fix",
     "test": "jest --detectOpenHandles",
     "test-ci": "npm run test -- --coverage",

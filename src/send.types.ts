@@ -1,11 +1,10 @@
-import type { Stats } from 'node:fs';
-
-import type { ParameterizedContext } from 'koa';
+import type {Stats} from 'node:fs';
+import type {ParameterizedContext} from 'koa';
 
 type SetHeaders = (
   res: ParameterizedContext['res'],
   path: string,
-  stats: Stats
+  stats: Stats,
 ) => void;
 
 export type SendOptions = {
@@ -52,4 +51,4 @@ export type SendOptions = {
   extensions?: string[] | false;
 };
 
-export { ParameterizedContext };
+export {type ParameterizedContext} from 'koa';

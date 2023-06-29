@@ -4,12 +4,10 @@
 import fs from 'node:fs';
 import asyncFs from 'node:fs/promises';
 import path from 'node:path';
-
 import safeResolvePath from 'resolve-path';
 import createError from 'http-errors';
-
-import type { SendOptions, ParameterizedContext } from './send.types';
-import { isPathExists, isPathHidden, getFileType } from './send.utils';
+import type {SendOptions, ParameterizedContext} from './send.types';
+import {isPathExists, isPathHidden, getFileType} from './send.utils';
 
 /**
  * Send file at `path` with the
@@ -23,8 +21,8 @@ import { isPathExists, isPathHidden, getFileType } from './send.utils';
  */
 export async function send(
   ctx: ParameterizedContext,
-  filePath: any,
-  opts: SendOptions = {}
+  filePath: string,
+  opts: SendOptions = {},
 ): Promise<string | undefined> {
   if (!ctx) throw new Error('koa context required');
   if (!filePath) throw new Error('file pathname required');
@@ -33,7 +31,7 @@ export async function send(
   const root = opts.root ? path.resolve(opts.root) : '';
   const trailingSlash = filePath.at(-1) === '/';
   filePath = filePath.slice(path.parse(filePath).root.length);
-  const index = opts.index;
+  const {index} = opts;
   const maxage = opts.maxage || opts.maxAge || 0;
   const immutable = opts.immutable || false;
   const hidden = opts.hidden || false;
@@ -41,7 +39,7 @@ export async function send(
   const extensions = Array.isArray(opts.extensions) ? opts.extensions : false;
   const brotli = opts.brotli !== false;
   const gzip = opts.gzip !== false;
-  const setHeaders = opts.setHeaders;
+  const {setHeaders} = opts;
   if (setHeaders && typeof setHeaders !== 'function')
     throw new TypeError('option setHeaders must be function');
 
@@ -66,7 +64,7 @@ export async function send(
     brotli &&
     (await isPathExists(filePath + '.br'))
   ) {
-    filePath = filePath + '.br';
+    filePath += '.br';
     ctx.set('Content-Encoding', 'br');
     ctx.res.removeHeader('Content-Length');
     encodingExt = '.br';
@@ -75,19 +73,19 @@ export async function send(
     gzip &&
     (await isPathExists(filePath + '.gz'))
   ) {
-    filePath = filePath + '.gz';
+    filePath += '.gz';
     ctx.set('Content-Encoding', 'gzip');
     ctx.res.removeHeader('Content-Length');
     encodingExt = '.gz';
   }
 
-  if (extensions && !/\./.exec(path.basename(filePath))) {
+  if (extensions && !path.basename(filePath).includes('.')) {
     for (let ext of extensions) {
       if (typeof ext !== 'string')
         throw new TypeError(
-          'option extensions must be array of strings or false'
+          'option extensions must be array of strings or false',
         );
-      if (!/^\./.exec(ext)) ext = `.${ext}`;
+      if (!ext.startsWith('.')) ext = `.${ext}`;
       if (await isPathExists(`${filePath}${ext}`)) {
         filePath = `${filePath}${ext}`;
         break;
@@ -126,6 +124,7 @@ export async function send(
     if (immutable) directives.push('immutable');
     ctx.set('Cache-Control', directives.join(','));
   }
+
   if (!ctx.type) ctx.type = getFileType(filePath, encodingExt);
   ctx.body = fs.createReadStream(filePath);
 
