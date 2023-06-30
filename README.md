@@ -5,7 +5,6 @@
 ![Build Status][github-action-image]
 [![Test coverage][coveralls-image]][coveralls-url]
 [![License][license-image]][license-url]
-[![Node Version][node-image]][node-url]
 [![Downloads][downloads-image]][downloads-url]
 
 [npm-image]: https://img.shields.io/npm/v/@koa/send.svg?style=flat-square
@@ -80,7 +79,7 @@ If you want to edit any other header, simply set them before calling `send`.
 ## Example
 
 ```js
-const send = require("koa-send");
+const send = require("@koa/send");
 const Koa = require("koa");
 const app = new Koa();
 
