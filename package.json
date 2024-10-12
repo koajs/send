@@ -1,6 +1,6 @@
 {
   "name": "@koa/send",
-  "version": "5.0.1",
+  "version": "6.0.0",
   "description": "Transfer static files",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
