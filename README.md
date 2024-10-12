@@ -19,6 +19,8 @@
 
 Koa static file serving middleware.
 
+> Notice: We recommend using `@koa/send` for installation, as both `koa-send` and `@koa/send` refer to the same module. However, in our next major versions bumps, we will deprecate `koa-send` and only maintain the module under `@koa/send`.
+
 ## Install
 
 [![NPM](https://nodei.co/npm/@koa/send.png?downloads=true)](https://nodei.co/npm/@koa/send)
