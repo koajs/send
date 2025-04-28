@@ -1,6 +1,5 @@
 # [**@koa/send**](https://github.com/koajs/send)
 
-
 [![NPM version][npm-image]][npm-url]
 ![Build Status][github-action-image]
 [![Test coverage][coveralls-image]][coveralls-url]
@@ -16,6 +15,8 @@
 [license-url]: LICENSE
 [downloads-image]: http://img.shields.io/npm/dm/koa-send.svg?style=flat-square
 [downloads-url]: https://npmjs.org/package/koa-send
+
+> NOTE: not yet tested to be compatible with Koa v3.
 
 Koa static file serving middleware.
 
